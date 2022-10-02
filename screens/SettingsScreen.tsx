@@ -1,46 +1,51 @@
 import { Button, StyleSheet, Image } from "react-native";
-import axios, { AxiosResponse } from "axios";
+import axios from "../api/axios";
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { User } from "../interfaces";
 
 import { Text, View } from "../components/Themed";
 import React from "react";
+import { RootTabScreenProps } from "../types";
 
-export default function SettingsScreen() {
+// Use this for registration screen.
+// export default function SettingsScreen({ navigation }: RootTabScreenProps<"TabTwo">) {
+
+export default function SettingsScreen({
+  navigation,
+}: RootTabScreenProps<"TabThree">) {
   const [userData, setUserData] = useState<User[]>([]);
+  //const [inputText, setInputText] = useState<string>("");
 
   const [buttonClicked, setButtonClicked] = useState(false);
-
   console.log("User data ", userData);
 
   const update = () => {
-    axios
-      .get<User[]>("http://10.0.2.2:8080/parking/user")
-      .then((response: AxiosResponse) => {
-        console.log("Response ", response.data);
-        setUserData(response.data);
-      });
+    axios.get<User[]>("parking/user").then((response: AxiosResponse) => {
+      console.log("Response ", response.data);
+      setUserData(response.data);
+    });
   };
-
-  useEffect(() => {
-    axios
-      .get<User[]>("http://10.0.2.2:8080/parking/user")
-      .then((response: AxiosResponse) => {
-        console.log("Response ", response.data);
-        setUserData(response.data);
-      });
-  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Settings currently used for testing get API request:
+        Settings currently used for testing GET API requests: BaseURL:
+        "http://10.0.2.2:8080" Go to ../api/axios to change
       </Text>
       <Button
         title="Click to fetch data"
         onPress={() => {
           update();
           setButtonClicked(true);
+        }}
+      />
+      <Text></Text>
+      <Button
+        title="Clear data"
+        onPress={() => {
+          setButtonClicked(false);
+          setUserData([]);
         }}
       />
       <View style={styles.container}>
@@ -69,6 +74,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     fontSize: 20,
     fontWeight: "bold",
+    marginBottom: 20,
   },
   separator: {
     marginVertical: 30,
