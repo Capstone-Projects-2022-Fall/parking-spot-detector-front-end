@@ -1,6 +1,5 @@
 import { SafeAreaView, Button } from "react-native";
-import { RootTabScreenProps } from "../../types";
-import { Text, View } from "../../components/Themed";
+import { Text} from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 
 export default function LoginScreen() {
@@ -15,3 +14,5 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
+
+
