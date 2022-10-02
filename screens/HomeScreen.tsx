@@ -19,7 +19,9 @@ export default function HomeScreen({
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Text>Open settings to test connection to API.</Text>
+      <Text>Open settings to test connection to local API.</Text>
+      <Text>Open profile to test connection to jsonplaceholder.com API.</Text>
+
       {/* <EditScreenInfo path="/screens/HomeScreen.tsx" /> */}
     </View>
   );
