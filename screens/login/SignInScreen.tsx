@@ -1,31 +1,18 @@
-import { SafeAreaView, Button, TouchableHighlight } from "react-native";
-import { Text} from "../../components/Themed";
+import { Text, View} from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 
-// export default function LoginScreen() {
-//   const navigation = useNavigation();
-//   return (
-//     <SafeAreaView>
-//       <Text>Login</Text>
-//       <Button
-//         title="Click to login:"
-//         onPress={() => navigation.navigate("Root")}
-//       />
-//     </SafeAreaView>
-//   );
-// }
 import {
   StyleSheet,
-  View,
   Image,
   TextInput,
   TouchableOpacity,
+  TouchableHighlight
 } from "react-native";
  
 export default function LoginScreen() {
   const navigation = useNavigation(); 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}> Parking Spot Detector</Text>
 
       <Image style={styles.image} source={require("../../assets/images/parking_logo.png")} />
@@ -57,9 +44,7 @@ export default function LoginScreen() {
       <TouchableOpacity>
         <Text style={styles.register_button}>New User? Register</Text>
       </TouchableOpacity>
-
-     
-    </SafeAreaView>
+    </View>
   );
 }
  
