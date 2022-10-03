@@ -1,21 +1,30 @@
-import { Text, View} from "../../components/Themed";
+import { Text, View } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 import {
   StyleSheet,
   Image,
   TextInput,
   TouchableOpacity,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform,
 } from "react-native";
- 
+
 export default function LoginScreen() {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      lightColor="#eee"
+      darkColor="rgba(255,255,255,0.1)"
+    >
       <Text style={styles.title}> Parking Spot Detector</Text>
 
-      <Image style={styles.image} source={require("../../assets/images/parking_logo.png")} />
+      <Image
+        style={styles.image}
+        source={require("../../assets/images/parking_logo.png")}
+      />
       <Text> *Click login to go to the home page*</Text>
       <View style={styles.inputView}>
         <TextInput
@@ -24,7 +33,7 @@ export default function LoginScreen() {
           placeholderTextColor="#003f5c"
         />
       </View>
- 
+
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
@@ -33,39 +42,42 @@ export default function LoginScreen() {
           secureTextEntry={true}
         />
       </View>
-      <TouchableHighlight style={styles.loginBtn} onPress={() => navigation.navigate("Root")}>
+      <TouchableHighlight
+        style={styles.loginBtn}
+        onPress={() => navigation.navigate("Root")}
+      >
         <Text>Click to login</Text>
       </TouchableHighlight>
- 
+
       <TouchableOpacity style={styles.forgot_button}>
-        <Text >Forgot Password?</Text>
+        <Text>Forgot Password?</Text>
       </TouchableOpacity>
 
       <TouchableOpacity>
         <Text style={styles.register_button}>New User? Register</Text>
       </TouchableOpacity>
+      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );
 }
- 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
 
-  title: { 
+  title: {
     fontSize: 30,
   },
- 
+
   image: {
-    width:"50%",
+    width: "50%",
     resizeMode: "contain",
     // marginBottom: 40,
   },
- 
+
   inputView: {
     backgroundColor: "#C19FDE",
     borderRadius: 30,
@@ -73,28 +85,28 @@ const styles = StyleSheet.create({
     height: 45,
     marginBottom: 10,
     marginTop: 5,
- 
+
     alignItems: "center",
   },
- 
+
   TextInput: {
     height: 50,
-     flex: 1,
+    flex: 1,
     padding: 10,
     marginLeft: 20,
   },
- 
+
   forgot_button: {
     height: 20,
     marginBottom: 10,
   },
 
-  register_button: { 
-    height: 30, 
-    marginBottom: 10, 
-    marginTop: 10, 
+  register_button: {
+    height: 30,
+    marginBottom: 10,
+    marginTop: 10,
   },
- 
+
   loginBtn: {
     width: "80%",
     borderRadius: 25,
