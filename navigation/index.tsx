@@ -53,7 +53,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator initialRouteName="SignIn">
-      <Stack.Screen name="SignIn" component={SignInScreen} />
+      <Stack.Screen
+        name="SignIn"
+        component={SignInScreen}
+        options={{ title: "Sign In" }}
+      />
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
