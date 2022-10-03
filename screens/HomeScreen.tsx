@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
@@ -9,13 +9,20 @@ export default function HomeScreen({
 }: RootTabScreenProps<"TabOne">) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
+      <Text style={styles.title}>Parking Spot Detector</Text>
+      <Image
+        source={require("../assets/images/parking_spot_logo.png")}
+        style={{ width: "80%", resizeMode: "contain" }}
+      />
       <View
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <Text>Open settings to test connection to local API.</Text>
+      <Text>Open profile to test connection to jsonplaceholder.com API.</Text>
+
+      {/* <EditScreenInfo path="/screens/HomeScreen.tsx" /> */}
     </View>
   );
 }

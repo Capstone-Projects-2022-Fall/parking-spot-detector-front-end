@@ -19,6 +19,9 @@ import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import SignInScreen from "../screens/login/SignInScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+
 import {
   RootStackParamList,
   RootTabParamList,
@@ -49,7 +52,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="SignIn">
+      <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
@@ -78,7 +82,7 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="TabOne" // Make initial screen
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}
@@ -109,7 +113,7 @@ function BottomTabNavigator() {
 
       <BottomTab.Screen
         name="TabTwo"
-        component={SettingsScreen}
+        component={ProfileScreen}
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => <TabBarIcon name="users" color={color} />,
