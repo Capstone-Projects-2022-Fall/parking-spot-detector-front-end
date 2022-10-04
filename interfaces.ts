@@ -1,8 +1,3 @@
-export interface User {
-  id: number;
-  name: string;
-}
-
 export interface Users {
   users: UserSample[];
 }
@@ -10,7 +5,7 @@ export interface Users {
 export interface UserSample {
   id: number;
   name: string;
-  userneme: string;
+  username: string;
   email: string;
   address: {
     street: string;
