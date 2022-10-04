@@ -10,9 +10,14 @@ import {
   TouchableHighlight,
   Platform,
 } from "react-native";
+import { useState } from "react";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <View
       style={styles.container}
@@ -29,22 +34,27 @@ export default function LoginScreen() {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Email."
+          placeholder="Enter email"
           placeholderTextColor="#003f5c"
+          onChangeText={(text) => setEmail(text)}
         />
       </View>
 
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Password."
+          placeholder="Enter password"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
+          onChangeText={(text) => setPassword(text)}
         />
       </View>
       <TouchableHighlight
         style={styles.loginBtn}
-        onPress={() => navigation.navigate("Root")}
+        onPress={() => {
+          navigation.navigate("Root");
+          console.log(email + " " + password);
+        }}
       >
         <Text>Click to login</Text>
       </TouchableHighlight>
@@ -93,7 +103,7 @@ const styles = StyleSheet.create({
     height: 50,
     flex: 1,
     padding: 10,
-    marginLeft: 20,
+    textAlign: "center",
   },
 
   forgot_button: {
