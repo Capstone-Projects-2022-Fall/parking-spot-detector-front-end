@@ -7,6 +7,7 @@ import { UserSample } from "../interfaces";
 import { Text, View } from "../components/Themed";
 import React from "react";
 import { RootTabScreenProps } from "../types";
+import { getUser } from "../api/signIn";
 
 // Use this for registration screen.
 // export default function SettingsScreen({ navigation }: RootTabScreenProps<"TabTwo">) {
@@ -18,15 +19,11 @@ export default function ProfileScreen({
   //const [inputText, setInputText] = useState<string>("");
 
   const [buttonClicked, setButtonClicked] = useState(false);
-  console.log("User data ", userData);
 
-  const update = () => {
-    axios
-      .get<UserSample[]>("https://jsonplaceholder.typicode.com/users")
-      .then((response: AxiosResponse) => {
-        console.log("Response ", response.data);
-        setUserData(response.data);
-      });
+  //getUsers();
+
+  const update = async () => {
+    setUserData(await getUser());
   };
 
   return (
@@ -50,9 +47,7 @@ export default function ProfileScreen({
         }}
       />
       <View style={styles.container}>
-        {buttonClicked == true ? (
-          <Text>{JSON.stringify(userData[0])}</Text>
-        ) : null}
+        <Text>{JSON.stringify(userData[0])}</Text>
 
         {buttonClicked == true ? (
           <Image
