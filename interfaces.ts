@@ -2,6 +2,11 @@ export interface Users {
   users: UserSample[];
 }
 
+export interface User {
+  id: number;
+  name: string;
+}
+
 export interface UserSample {
   id: number;
   name: string;
