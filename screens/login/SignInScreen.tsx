@@ -1,6 +1,8 @@
 import { Text, View } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
+import { selectUser, fetchUserAsync } from "../../redux/user/userSlice";
 
 import {
   StyleSheet,
@@ -15,7 +17,9 @@ import { useState } from "react";
 export default function LoginScreen() {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState("");
+  const dispatch = useAppDispatch();
+
+  const [email, setEmail] = useState(0);
   const [password, setPassword] = useState("");
 
   return (
@@ -34,9 +38,9 @@ export default function LoginScreen() {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Enter email"
+          placeholder="Enter user id to show on home page!"
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text) => setEmail(Number(text))}
         />
       </View>
 
@@ -53,7 +57,8 @@ export default function LoginScreen() {
         style={styles.loginBtn}
         onPress={() => {
           navigation.navigate("Root");
-          console.log(email + " " + password);
+          dispatch(fetchUserAsync(email));
+          console.log("Email: " + email + " " + "Password: " + password);
         }}
       >
         <Text>Click to login</Text>
