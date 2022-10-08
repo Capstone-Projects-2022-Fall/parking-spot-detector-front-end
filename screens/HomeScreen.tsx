@@ -3,7 +3,7 @@ import { Image, StyleSheet } from "react-native";
 
 import { Text, View } from "../components/Themed";
 import { useAppSelector } from "../hooks/hooks";
-import { UserSample, UserState } from "../interfaces";
+import { UserState } from "../redux/user/index";
 import store from "../redux/store";
 import userSlice from "../redux/user/userSlice";
 import { RootTabScreenProps } from "../types";
@@ -11,26 +11,6 @@ import { RootTabScreenProps } from "../types";
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
-  const initialState: UserState = {
-    id: 0,
-    name: "",
-    username: "",
-    email: "",
-    status: "idle",
-    address: {
-      street: "",
-      suite: "",
-      city: "",
-      zipcode: "",
-      geo: {
-        lat: 0,
-        lng: 0,
-      },
-    },
-  };
-
-  //const [user, setUser] = useState<UserState>(initialState);
-
   const user = useAppSelector((state) => state.user);
 
   return (

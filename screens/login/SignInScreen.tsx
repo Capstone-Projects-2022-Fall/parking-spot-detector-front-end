@@ -1,8 +1,8 @@
 import { Text, View } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
-import { selectUser, fetchUserAsync } from "../../redux/user/userSlice";
+import { useAppDispatch } from "../../hooks/hooks";
+import { fetchUserAsync } from "../../redux/user/userSlice";
 
 import {
   StyleSheet,

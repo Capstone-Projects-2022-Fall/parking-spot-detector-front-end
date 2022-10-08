@@ -1,14 +1,14 @@
 import { RootState, store } from "../store";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { UserState } from "../../interfaces";
+import { LoginStatus, UserState } from "./index";
 
 const initialState: UserState = {
   id: 0,
   name: "",
   username: "",
   email: "",
-  status: "idle",
+  status: LoginStatus.IDLE,
   address: {
     street: "",
     suite: "",
@@ -33,7 +33,7 @@ export const fetchUserAsync = createAsyncThunk(
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error message: ", error.message);
-        initialState.status = "failed";
+        initialState.status = LoginStatus.FAILED;
         return initialState;
       }
     }
@@ -54,18 +54,18 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserAsync.pending, (state) => {
-        state.status = "loading";
+        state.status = LoginStatus.LOADING;
       })
       .addCase(fetchUserAsync.fulfilled, (state, action) => {
         state.id = action.payload!.id;
-        state.status = "idle";
+        state.status = LoginStatus.SUCCEEDED;
         state.name = action.payload!.name;
         state.username = action.payload!.username;
         state.email = action.payload!.email;
         state.address = action.payload!.address;
       })
       .addCase(fetchUserAsync.rejected, (state) => {
-        state.status = "failed";
+        state.status = LoginStatus.FAILED;
       });
   },
 });
@@ -73,6 +73,6 @@ export const userSlice = createSlice({
 export const { currentUser } = userSlice.actions;
 
 // User ID global
-export const selectUser = (state: RootState) => state.user.id;
+export const selectUserId = (state: RootState) => state.user.id;
 
 export default userSlice.reducer;
