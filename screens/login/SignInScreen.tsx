@@ -1,7 +1,7 @@
 import { Text, View } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch } from "../../hooks/hooks";
 import { fetchUserAsync } from "../../redux/user/userSlice";
 
 import {
@@ -23,6 +23,9 @@ export default function SignInScreen() {
 
   const [email, setEmail] = useState(0);
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState(
+    "Enter a number 1 - 10 to show user on home screen"
+  );
 
   // Check if user is authenticated before allowing to root tab navigation.
   // TODO logout will change all states to initial to reset login.
@@ -33,6 +36,8 @@ export default function SignInScreen() {
         auth = store.getState().user.authentication;
         if (auth == LoginStatus.SUCCEEDED) {
           navigation.navigate("Root");
+        } else {
+          setErrorMsg("Invalid username or password");
         }
       }),
     []
@@ -50,11 +55,11 @@ export default function SignInScreen() {
         style={styles.image}
         source={require("../../assets/images/parking_logo.png")}
       />
-      <Text> *Click login to go to the home page*</Text>
+      <Text> {errorMsg}</Text>
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Enter user id to show on home page!"
+          placeholder="Enter email"
           placeholderTextColor="#003f5c"
           onChangeText={(text) => setEmail(Number(text))}
         />
@@ -79,7 +84,10 @@ export default function SignInScreen() {
         <Text>Click to login</Text>
       </TouchableHighlight>
 
-      <TouchableOpacity style={styles.forgot_button}>
+      <TouchableOpacity
+        style={styles.forgot_button}
+        onPress={() => navigation.navigate("Root")}
+      >
         <Text>Forgot Password?</Text>
       </TouchableOpacity>
 
