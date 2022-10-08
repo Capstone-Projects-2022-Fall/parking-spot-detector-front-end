@@ -1,7 +1,7 @@
 import { Text, View } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useAppDispatch } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchUserAsync } from "../../redux/user/userSlice";
 
 import {
@@ -12,15 +12,31 @@ import {
   TouchableHighlight,
   Platform,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { LoginStatus } from "../../redux/user";
+import store from "../../redux/store";
 
-export default function LoginScreen() {
+export default function SignInScreen() {
   const navigation = useNavigation();
 
   const dispatch = useAppDispatch();
 
   const [email, setEmail] = useState(0);
   const [password, setPassword] = useState("");
+
+  // Check if user is authenticated before allowing to root tab navigation.
+  // TODO logout will change all states to initial to reset login.
+  let auth = LoginStatus.FAILED;
+  useEffect(
+    () =>
+      store.subscribe(() => {
+        auth = store.getState().user.authentication;
+        if (auth == LoginStatus.SUCCEEDED) {
+          navigation.navigate("Root");
+        }
+      }),
+    []
+  );
 
   return (
     <View
@@ -56,7 +72,6 @@ export default function LoginScreen() {
       <TouchableHighlight
         style={styles.loginBtn}
         onPress={() => {
-          navigation.navigate("Root");
           dispatch(fetchUserAsync(email));
           console.log("Email: " + email + " " + "Password: " + password);
         }}
@@ -68,7 +83,11 @@ export default function LoginScreen() {
         <Text>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Registration");
+        }}
+      >
         <Text style={styles.register_button}>New User? Register</Text>
       </TouchableOpacity>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />

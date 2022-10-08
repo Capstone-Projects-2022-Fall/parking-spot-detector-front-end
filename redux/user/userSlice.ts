@@ -9,6 +9,7 @@ const initialState: UserState = {
   username: "",
   email: "",
   status: LoginStatus.IDLE,
+  authentication: LoginStatus.FAILED,
   address: {
     street: "",
     suite: "",
@@ -29,6 +30,7 @@ export const fetchUserAsync = createAsyncThunk(
         "https://jsonplaceholder.typicode.com/users/" + id
       );
       console.log(response.data);
+      response.data.authentication = LoginStatus.SUCCEEDED;
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -59,6 +61,7 @@ export const userSlice = createSlice({
       .addCase(fetchUserAsync.fulfilled, (state, action) => {
         state.id = action.payload!.id;
         state.status = LoginStatus.SUCCEEDED;
+        state.authentication = action.payload!.authentication;
         state.name = action.payload!.name;
         state.username = action.payload!.username;
         state.email = action.payload!.email;

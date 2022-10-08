@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
 import { Image, StyleSheet } from "react-native";
-
 import { Text, View } from "../components/Themed";
 import { useAppSelector } from "../hooks/hooks";
-import { UserState } from "../redux/user/index";
-import store from "../redux/store";
-import userSlice from "../redux/user/userSlice";
 import { RootTabScreenProps } from "../types";
 
 export default function HomeScreen({
