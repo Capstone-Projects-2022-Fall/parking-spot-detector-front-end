@@ -1,7 +1,7 @@
 import { RootState } from "../store";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { LoginStatus, UserState } from "./index";
+import { LoginStatus, UserState, UserReg } from "./index";
 
 const initialState: UserState = {
   id: 0,
@@ -23,7 +23,7 @@ const initialState: UserState = {
 
 export const fetchUserAsync = createAsyncThunk(
   "user/fetchUser",
-  async (email: string) => {
+  async (email, password) => {
     try {
       const response = await axios.get<UserState[]>(
         "https://jsonplaceholder.typicode.com/users/?email=" + email
@@ -41,6 +41,35 @@ export const fetchUserAsync = createAsyncThunk(
         throw error;
       }
       throw error;
+    }
+  }
+);
+
+// TODO add registration url
+
+export const registerUser = createAsyncThunk(
+  // action type string
+  "user/register",
+  // callback function
+  async (userReg: UserReg) => {
+    try {
+      // configure header's Content-Type as JSON
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      // make request to backend
+      await axios.post(
+        "/api/user/register",
+        JSON.stringify({ userReg }),
+        config
+      );
+    } catch (error) {
+      // return custom error message from API if any
+      if (axios.isAxiosError(error)) {
+        console.log("error message: ", error.message);
+      }
     }
   }
 );
