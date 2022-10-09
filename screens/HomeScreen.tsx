@@ -11,6 +11,10 @@ export default function HomeScreen({
   const user = useAppSelector((state) => state.user);
   console.log(JSON.stringify(user));
 
+  useEffect(() => {
+    // do stuff
+  }, [user]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
@@ -18,6 +22,7 @@ export default function HomeScreen({
         {"\n"}Email: {user.email}
         {"\n"}Username: {user.username}
         {"\n"}City: {user.address?.city}
+        {"\n"}LoginStatus: {user.status}
       </Text>
       <Image
         source={require("../assets/images/parking_spot_logo.png")}
