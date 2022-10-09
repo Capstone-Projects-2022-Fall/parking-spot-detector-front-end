@@ -11,7 +11,6 @@ export interface UserState {
     | LoginStatus.LOADING
     | LoginStatus.SUCCEEDED
     | LoginStatus.FAILED;
-  isLoggedIn: LoginStatus.SUCCEEDED | LoginStatus.FAILED;
   address?: {
     street: string;
     suite: string;
