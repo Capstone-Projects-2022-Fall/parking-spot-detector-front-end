@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   Platform,
 } from "react-native";
+import { Button } from "native-base";
 
 export default function RegisterScreen() {
   return (
@@ -19,6 +20,7 @@ export default function RegisterScreen() {
       darkColor="rgba(255,255,255,0.1)"
     >
       <Text> *Registration Screen*</Text>
+    <Button>Button</Button>
     </View>
   );
 }
