@@ -1,5 +1,3 @@
-import { isLoading } from "expo-font";
-
 // For redux
 export interface UserState {
   id: number;

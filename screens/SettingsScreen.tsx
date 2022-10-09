@@ -1,8 +1,8 @@
 import { Button, StyleSheet, Image } from "react-native";
 import axios from "../api/axios";
 import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
-import { User } from "../interfaces";
+import { useState } from "react";
+import { UserSample } from "../interfaces";
 
 import { Text, View } from "../components/Themed";
 import React from "react";
@@ -14,14 +14,14 @@ import { RootTabScreenProps } from "../types";
 export default function SettingsScreen({
   navigation,
 }: RootTabScreenProps<"TabThree">) {
-  const [userData, setUserData] = useState<User[]>([]);
+  const [userData, setUserData] = useState<UserSample[]>([]);
   //const [inputText, setInputText] = useState<string>("");
 
   const [buttonClicked, setButtonClicked] = useState(false);
   console.log("User data ", userData);
 
   const update = () => {
-    axios.get<User[]>("parking/user").then((response: AxiosResponse) => {
+    axios.get<UserSample[]>("parking/user").then((response: AxiosResponse) => {
       console.log("Response ", response.data);
       setUserData(response.data);
     });

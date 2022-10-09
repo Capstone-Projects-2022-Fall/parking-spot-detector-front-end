@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Image, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
 import { useAppSelector } from "../hooks/hooks";
-import store from "../redux/store";
 import { RootTabScreenProps } from "../types";
 
 export default function HomeScreen({

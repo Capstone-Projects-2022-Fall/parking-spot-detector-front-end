@@ -62,7 +62,7 @@ export default function SignInScreen() {
         {" "}
         "Enter an email from:{"\n"}
         https://jsonplaceholder.typicode.com/users{"\n"}example:
-        email=Sincere@april.biz username=Bret"
+        email=Sincere@april.biz password=Bret"
       </Text>
       <View style={styles.inputView}>
         <TextInput
