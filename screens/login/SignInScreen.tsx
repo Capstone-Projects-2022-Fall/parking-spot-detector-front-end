@@ -1,5 +1,5 @@
 import { Text, View } from "../../components/Themed";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, StackActions } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchUserAsync } from "../../redux/user/userSlice";
@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import { LoginStatus } from "../../redux/user";
-import store from "../../redux/store";
 
 export default function SignInScreen() {
   const navigation = useNavigation();
@@ -31,13 +30,17 @@ export default function SignInScreen() {
 
   useEffect(() => {
     //console.log("USER UPDATED");
-    console.log("isLoggedIn: " + user.status);
+    console.log("LoginStatus: " + user.status);
+    console.log("LoginStatus: " + user.id);
 
     if (user.status == LoginStatus.SUCCEEDED && password == user.username) {
-      navigation.navigate("Root");
+      setEmail("");
+      setPassword("");
+      navigation.dispatch(StackActions.replace("Root"));
     } else if (
       user.status == LoginStatus.SUCCEEDED &&
-      password != user.username
+      password != user.username &&
+      user.id != 0
     ) {
       alert("Incorrect password");
     }

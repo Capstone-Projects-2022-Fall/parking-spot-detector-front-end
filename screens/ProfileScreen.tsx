@@ -1,15 +1,13 @@
 import { Button, StyleSheet, Image } from "react-native";
-import axios from "axios";
-import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserSample } from "../interfaces";
-
 import { Text, View } from "../components/Themed";
 import React from "react";
 import { RootTabScreenProps } from "../types";
 import { getUser } from "../api/signIn";
 import { useAppDispatch } from "../hooks/hooks";
 import { logoutUser } from "../redux/user/userSlice";
+import { StackActions } from "@react-navigation/native";
 
 // Use this for registration screen.
 // export default function SettingsScreen({ navigation }: RootTabScreenProps<"TabTwo">) {
@@ -63,8 +61,8 @@ export default function ProfileScreen({
         <Button
           title="Logout"
           onPress={() => {
-            dispatch(logoutUser);
-            navigation.navigate("SignIn");
+            dispatch(logoutUser());
+            navigation.dispatch(StackActions.replace("SignIn"));
           }}
         />
       </View>
