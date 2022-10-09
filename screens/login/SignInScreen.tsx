@@ -11,32 +11,37 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Platform,
+  Alert,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { LoginStatus } from "../../redux/user";
 import store from "../../redux/store";
+import HomeScreen from "../HomeScreen";
 
 export default function SignInScreen() {
   const navigation = useNavigation();
 
   const dispatch = useAppDispatch();
 
-  const [email, setEmail] = useState(0);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(
-    "Enter a number 1 - 10 to show user on home screen"
+    "Enter an email from:\n https://jsonplaceholder.typicode.com/users\nexample: Sincere@april.biz"
   );
 
   // Check if user is authenticated before allowing to root tab navigation.
   // TODO logout will change all states to initial to reset login.
-  let auth = LoginStatus.FAILED;
+  let isLoggedIn = LoginStatus.FAILED;
+
   useEffect(
     () =>
       store.subscribe(() => {
-        auth = store.getState().user.authentication;
-        if (auth == LoginStatus.SUCCEEDED) {
+        isLoggedIn = store.getState().user.isLoggedIn;
+        if (isLoggedIn == LoginStatus.SUCCEEDED) {
+          setEmail("");
+          setPassword("");
           navigation.navigate("Root");
-        } else {
+        } else if (isLoggedIn == LoginStatus.FAILED) {
           setErrorMsg("Invalid username or password");
         }
       }),
@@ -55,13 +60,13 @@ export default function SignInScreen() {
         style={styles.image}
         source={require("../../assets/images/parking_logo.png")}
       />
-      <Text> {errorMsg}</Text>
+      <Text style={{ color: "red" }}> {errorMsg}</Text>
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
           placeholder="Enter email"
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setEmail(Number(text))}
+          onChangeText={(text) => setEmail(text)}
         />
       </View>
 

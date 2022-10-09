@@ -1,16 +1,24 @@
+import { useEffect, useState } from "react";
 import { Image, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
 import { useAppSelector } from "../hooks/hooks";
+import store from "../redux/store";
 import { RootTabScreenProps } from "../types";
 
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
   const user = useAppSelector((state) => state.user);
+  console.log(JSON.stringify(user));
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{JSON.stringify(user)}</Text>
+      <Text style={styles.title}>
+        Welcome {user.name}
+        {"\n"}Email: {user.email}
+        {"\n"}Username: {user.username}
+        {"\n"}City: {user.address?.city}
+      </Text>
       <Image
         source={require("../assets/images/parking_spot_logo.png")}
         style={{ width: "80%", resizeMode: "contain" }}
