@@ -1,7 +1,7 @@
 import { Text, View } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useAppDispatch } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchUserAsync } from "../../redux/user/userSlice";
 
 import {
@@ -11,42 +11,37 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Platform,
-  Alert,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { LoginStatus } from "../../redux/user";
 import store from "../../redux/store";
-import HomeScreen from "../HomeScreen";
 
 export default function SignInScreen() {
   const navigation = useNavigation();
 
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState(
-    "Enter an email from:\n https://jsonplaceholder.typicode.com/users\nexample: Sincere@april.biz"
-  );
 
   // Check if user is authenticated before allowing to root tab navigation.
   // TODO logout will change all states to initial to reset login.
   let isLoggedIn = LoginStatus.FAILED;
 
-  useEffect(
-    () =>
-      store.subscribe(() => {
-        isLoggedIn = store.getState().user.isLoggedIn;
-        if (isLoggedIn == LoginStatus.SUCCEEDED) {
-          setEmail("");
-          setPassword("");
-          navigation.navigate("Root");
-        } else if (isLoggedIn == LoginStatus.FAILED) {
-          setErrorMsg("Invalid username or password");
-        }
-      }),
-    []
-  );
+  useEffect(() => {
+    //console.log("USER UPDATED");
+    console.log("isLoggedIn: " + user.status);
+
+    if (user.status == LoginStatus.SUCCEEDED && password == user.username) {
+      navigation.navigate("Root");
+    } else if (
+      user.status == LoginStatus.SUCCEEDED &&
+      password != user.username
+    ) {
+      alert("Incorrect password");
+    }
+  }, [user.status]);
 
   return (
     <View
@@ -60,7 +55,12 @@ export default function SignInScreen() {
         style={styles.image}
         source={require("../../assets/images/parking_logo.png")}
       />
-      <Text style={{ color: "red" }}> {errorMsg}</Text>
+      <Text style={{ color: "red" }}>
+        {" "}
+        "Enter an email from:{"\n"}
+        https://jsonplaceholder.typicode.com/users{"\n"}example:
+        email=Sincere@april.biz username=Bret"
+      </Text>
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}

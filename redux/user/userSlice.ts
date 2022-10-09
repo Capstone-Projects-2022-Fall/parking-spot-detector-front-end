@@ -9,7 +9,6 @@ const initialState: UserState = {
   username: "",
   email: "",
   status: LoginStatus.IDLE,
-  isLoggedIn: LoginStatus.FAILED,
   address: {
     street: "",
     suite: "",
@@ -30,14 +29,16 @@ export const fetchUserAsync = createAsyncThunk(
         "https://jsonplaceholder.typicode.com/users/?email=" + email
       );
       let data = response.data[0];
+      if (response.data.length < 1) {
+        alert("Invalid username or password");
+        throw console.warn("Invalid Username or Password!!!");
+      }
       console.log(response.data);
-      data.isLoggedIn = LoginStatus.SUCCEEDED;
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error message: ", error.message);
-        initialState.status = LoginStatus.FAILED;
-        return initialState;
+        throw error;
       }
       throw error;
     }
@@ -53,7 +54,12 @@ export const userSlice = createSlice({
       state = action.payload;
     },
     logoutUser: (state) => {
-      state = initialState;
+      state.address = initialState.address;
+      state.id = initialState.id;
+      state.email = initialState.email;
+      state.name = initialState.name;
+      state.username = initialState.username;
+      state.status = LoginStatus.IDLE;
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -66,7 +72,6 @@ export const userSlice = createSlice({
       .addCase(fetchUserAsync.fulfilled, (state, action) => {
         state.id = action.payload!.id;
         state.status = LoginStatus.SUCCEEDED;
-        state.isLoggedIn = action.payload!.isLoggedIn;
         state.name = action.payload!.name;
         state.username = action.payload!.username;
         state.email = action.payload!.email;
