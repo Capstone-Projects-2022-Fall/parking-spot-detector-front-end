@@ -34,84 +34,87 @@ import { Button } from "native-base";
 // });
 export default class SignUp extends React.Component {
   state = {
-    username: '', password: '', email: '', phone_number: ''
-  }
+    username: "",
+    password: "",
+    email: "",
+    phone_number: "",
+  };
   onChangeText = (key: string, val: string) => {
-    this.setState({ [key]: val })
-  }
+    this.setState({ [key]: val });
+  };
   signUp = async () => {
-    const { username, password, email, phone_number } = this.state
+    const { username, password, email, phone_number } = this.state;
     try {
       // here place your signup logic
-      console.log('user successfully signed up!: ')
+      console.log("user successfully signed up!: ");
     } catch (err) {
-      console.log('error signing up: ', err)
+      console.log("error signing up: ", err);
     }
-  }
- 
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}> Parking Spot Detector</Text>
 
-      <Image
-        style={styles.image}
-        source={require("../../assets/images/parking_logo.png")}
-      />
-        <TextInput
-          style={styles.input}
-          placeholder='Username'
-          autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('username', val)}
+        <Image
+          style={styles.image}
+          source={require("../../assets/images/parking_logo.png")}
         />
         <TextInput
           style={styles.input}
-          placeholder='Password'
+          placeholder="Username"
+          autoCapitalize="none"
+          placeholderTextColor="white"
+          onChangeText={(val) => this.onChangeText("username", val)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
           secureTextEntry={true}
           autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('password', val)}
+          placeholderTextColor="white"
+          onChangeText={(val) => this.onChangeText("password", val)}
         />
         <TextInput
           style={styles.input}
-          placeholder='Email'
+          placeholder="Email"
           autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('email', val)}
+          placeholderTextColor="white"
+          onChangeText={(val) => this.onChangeText("email", val)}
         />
         <TextInput
           style={styles.input}
-          placeholder='Phone Number'
+          placeholder="Phone Number"
           autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('phone_number', val)}
+          placeholderTextColor="white"
+          onChangeText={(val) => this.onChangeText("phone_number", val)}
         />
-        <Button
-        style={styles.regBtn}
-          onPress={this.signUp}
-        > Register </Button>
+        <Button style={styles.regBtn} onPress={this.signUp}>
+          {" "}
+          Register{" "}
+        </Button>
       </View>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   input: {
-    width: 350,
-    height: 30,
-    backgroundColor: '#C19FDE',
+    width: "70%",
+
+    backgroundColor: "#C19FDE",
     margin: 10,
     padding: 8,
-    color: 'white',
+    color: "white",
     borderRadius: 14,
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   regBtn: {
     width: "80%",
@@ -133,4 +136,4 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     // marginBottom: 40,
   },
-})
+});

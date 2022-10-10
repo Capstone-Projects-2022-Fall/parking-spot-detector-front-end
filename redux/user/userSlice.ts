@@ -3,6 +3,9 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { LoginStatus, UserState, User } from "./index";
 
+/**
+ * The initial state of the user to be stored in redux
+ */
 const initialState: UserState = {
   id: 0,
   name: "",
@@ -21,6 +24,11 @@ const initialState: UserState = {
   },
 };
 
+/**
+ * Thunk for fetching user using axios
+ * @param email The email of the user
+ * @return {UserState} The retrieved user state
+ */
 export const fetchUserAsync = createAsyncThunk(
   "user/fetchUser",
   async (email: string) => {
@@ -30,8 +38,8 @@ export const fetchUserAsync = createAsyncThunk(
       );
       let data = response.data[0];
       if (response.data.length < 1) {
-        alert("Invalid username or password");
-        throw console.warn("Invalid Username or Password!!!");
+        alert("Invalid username");
+        throw console.warn("Invalid Username");
       }
       console.log(response.data);
       return data;
@@ -45,8 +53,10 @@ export const fetchUserAsync = createAsyncThunk(
   }
 );
 
-// TODO add registration url
-
+/**
+ * Thunk function for posting new user/registration using axios
+ * @param user The user object to be posted as a registered user
+ */
 export const registerUser = createAsyncThunk(
   // action type string
   "user/register",
@@ -70,6 +80,9 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+/**
+ * userSlice function for handling reducers for user actions.
+ */
 export const userSlice = createSlice({
   name: "user",
   initialState,

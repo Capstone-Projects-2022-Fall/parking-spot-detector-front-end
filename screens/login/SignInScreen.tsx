@@ -15,6 +15,10 @@ import {
 import { useEffect, useState } from "react";
 import { LoginStatus } from "../../redux/user";
 
+/**
+ * The SignInScreen contains the view and functionality for user sign in.
+ * @returns {View} SignInScreen
+ */
 export default function SignInScreen() {
   const navigation = useNavigation();
 
@@ -24,14 +28,9 @@ export default function SignInScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Check if user is authenticated before allowing to root tab navigation.
-  // TODO logout will change all states to initial to reset login.
-  let isLoggedIn = LoginStatus.FAILED;
-
+  // Listen for changes on user.status and allow login if credentials match.
   useEffect(() => {
-    //console.log("USER UPDATED");
     console.log("LoginStatus: " + user.status);
-    console.log("LoginStatus: " + user.id);
 
     if (user.status == LoginStatus.SUCCEEDED && password == user.username) {
       setEmail("");
@@ -125,7 +124,6 @@ const styles = StyleSheet.create({
   image: {
     width: "50%",
     resizeMode: "contain",
-    // marginBottom: 40,
   },
 
   inputView: {
