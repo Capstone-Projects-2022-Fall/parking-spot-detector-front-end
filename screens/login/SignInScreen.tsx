@@ -1,6 +1,8 @@
 import { Text, View } from "../../components/Themed";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, StackActions } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { fetchUserAsync } from "../../redux/user/userSlice";
 
 import {
   StyleSheet,
@@ -10,13 +12,39 @@ import {
   TouchableHighlight,
   Platform,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { LoginStatus } from "../../redux/user";
 
-export default function LoginScreen() {
+export default function SignInScreen() {
   const navigation = useNavigation();
+
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Check if user is authenticated before allowing to root tab navigation.
+  // TODO logout will change all states to initial to reset login.
+  let isLoggedIn = LoginStatus.FAILED;
+
+  useEffect(() => {
+    //console.log("USER UPDATED");
+    console.log("LoginStatus: " + user.status);
+    console.log("LoginStatus: " + user.id);
+
+    if (user.status == LoginStatus.SUCCEEDED && password == user.username) {
+      setEmail("");
+      setPassword("");
+      navigation.dispatch(StackActions.replace("Root"));
+    } else if (
+      user.status == LoginStatus.SUCCEEDED &&
+      password != user.username &&
+      user.id != 0
+    ) {
+      alert("Incorrect password");
+    }
+  }, [user.status]);
 
   return (
     <View
@@ -30,7 +58,12 @@ export default function LoginScreen() {
         style={styles.image}
         source={require("../../assets/images/parking_logo.png")}
       />
-      <Text> *Click login to go to the home page*</Text>
+      <Text style={{ color: "red" }}>
+        {" "}
+        "Enter an email from:{"\n"}
+        https://jsonplaceholder.typicode.com/users{"\n"}example:
+        email=Sincere@april.biz password=Bret"
+      </Text>
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
@@ -52,18 +85,25 @@ export default function LoginScreen() {
       <TouchableHighlight
         style={styles.loginBtn}
         onPress={() => {
-          navigation.navigate("Root");
-          console.log(email + " " + password);
+          dispatch(fetchUserAsync(email));
+          console.log("Email: " + email + " " + "Password: " + password);
         }}
       >
         <Text>Click to login</Text>
       </TouchableHighlight>
 
-      <TouchableOpacity style={styles.forgot_button}>
+      <TouchableOpacity
+        style={styles.forgot_button}
+        onPress={() => navigation.navigate("Root")}
+      >
         <Text>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Registration");
+        }}
+      >
         <Text style={styles.register_button}>New User? Register</Text>
       </TouchableOpacity>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />

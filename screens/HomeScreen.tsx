@@ -1,14 +1,28 @@
+import { useEffect } from "react";
 import { Image, StyleSheet } from "react-native";
-
 import { Text, View } from "../components/Themed";
+import { useAppSelector } from "../hooks/hooks";
 import { RootTabScreenProps } from "../types";
 
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
+  const user = useAppSelector((state) => state.user);
+  console.log(JSON.stringify(user));
+
+  useEffect(() => {
+    // do stuff
+  }, [user]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Parking Spot Detector</Text>
+      <Text style={styles.title}>
+        Welcome {user.name}
+        {"\n"}Email: {user.email}
+        {"\n"}Username: {user.username}
+        {"\n"}City: {user.address?.city}
+        {"\n"}LoginStatus: {user.status}
+      </Text>
       <Image
         source={require("../assets/images/parking_spot_logo.png")}
         style={{ width: "80%", resizeMode: "contain" }}

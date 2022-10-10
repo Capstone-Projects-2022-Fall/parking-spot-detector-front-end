@@ -1,7 +1,4 @@
-export interface Users {
-  users: UserSample[];
-}
-
+// For profile screen api test
 export interface UserSample {
   id: number;
   name: string;

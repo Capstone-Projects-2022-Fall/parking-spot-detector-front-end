@@ -1,7 +1,9 @@
 # Parking Spot Detector: Front-end
+
 ## The React Native front-end mobile application for the parking spot detector capstone project
 
 ### Installation Instructions
+
 Download the Expo Go application from the Google or Apple stores for your mobile device.
 Scan the following QR code on your mobile device after the Expo Go app is installed:
 
@@ -10,3 +12,10 @@ Scan the following QR code on your mobile device after the Expo Go app is instal
 Or, open this link on your Expo Go App:
 
 exp://exp.host/@projects-in-computer-science/ParkingSpotDetector?release-channel=default
+
+### Development Instructions
+
+Clone the project into your IDE
+Run npm install expo from within the cloned repository folder
+Run the command npx expo start to start the expo cli for using emulators and debugging features
+Follow the prompts

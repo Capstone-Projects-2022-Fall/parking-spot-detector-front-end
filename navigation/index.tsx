@@ -21,6 +21,7 @@ import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import SignInScreen from "../screens/login/SignInScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import RegisterScreen from "../screens/login/Register";
 
 import {
   RootStackParamList,
@@ -57,6 +58,11 @@ function RootNavigator() {
         name="SignIn"
         component={SignInScreen}
         options={{ title: "Sign In" }}
+      />
+      <Stack.Screen
+        name="Registration"
+        component={RegisterScreen}
+        options={{ title: "Register" }}
       />
       <Stack.Screen
         name="Root"
