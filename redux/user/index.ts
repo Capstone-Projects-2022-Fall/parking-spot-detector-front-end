@@ -21,6 +21,13 @@ export interface UserState {
   };
 }
 
+export interface User {
+  userName: string;
+  email: string;
+  password: string;
+  phone: number;
+}
+
 export enum LoginStatus {
   IDLE = "idle",
   LOADING = "loading",
