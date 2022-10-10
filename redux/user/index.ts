@@ -21,7 +21,7 @@ export interface UserState {
   };
 }
 
-export interface UserReg {
+export interface User {
   userName: string;
   email: string;
   password: string;
