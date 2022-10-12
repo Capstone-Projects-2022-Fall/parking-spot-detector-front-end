@@ -2,7 +2,7 @@ import { Text, View } from "../../components/Themed";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchUserAsync } from "../../redux/user/userSlice";
+import { fetchUserThunk } from "../../redux/user/userSlice";
 
 import {
   StyleSheet,
@@ -30,8 +30,6 @@ export default function SignInScreen() {
 
   // Listen for changes on user.status and allow login if credentials match.
   useEffect(() => {
-    console.log("LoginStatus: " + user.status);
-
     if (user.status == LoginStatus.SUCCEEDED && password == user.username) {
       setEmail("");
       setPassword("");
@@ -68,6 +66,7 @@ export default function SignInScreen() {
           style={styles.TextInput}
           placeholder="Enter email"
           placeholderTextColor="#003f5c"
+          autoComplete="email"
           onChangeText={(text) => setEmail(text)}
         />
       </View>
@@ -84,7 +83,7 @@ export default function SignInScreen() {
       <TouchableHighlight
         style={styles.loginBtn}
         onPress={() => {
-          dispatch(fetchUserAsync(email));
+          dispatch(fetchUserThunk(email));
           console.log("Email: " + email + " " + "Password: " + password);
         }}
       >

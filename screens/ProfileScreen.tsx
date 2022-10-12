@@ -4,7 +4,6 @@ import { UserSample } from "../interfaces";
 import { Text, View } from "../components/Themed";
 import React from "react";
 import { RootTabScreenProps } from "../types";
-import { getUser } from "../api/signIn";
 import { useAppDispatch } from "../hooks/hooks";
 import { logoutUser } from "../redux/user/userSlice";
 import { StackActions } from "@react-navigation/native";

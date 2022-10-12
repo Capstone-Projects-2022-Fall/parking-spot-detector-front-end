@@ -4,6 +4,11 @@ export interface UserState {
   name: string;
   username: string;
   email: string;
+  regStatus:
+    | LoginStatus.IDLE
+    | LoginStatus.LOADING
+    | LoginStatus.SUCCEEDED
+    | LoginStatus.FAILED;
   status:
     | LoginStatus.IDLE
     | LoginStatus.LOADING
@@ -21,17 +26,31 @@ export interface UserState {
   };
 }
 
-export interface User {
-  userId: number;
-  userName: string;
-  email: string;
-  password: string;
-  phone: number;
-}
-
 export enum LoginStatus {
   IDLE = "idle",
   LOADING = "loading",
   SUCCEEDED = "succeeded",
   FAILED = "failed",
 }
+
+/**
+ * The initial state of the user to be stored in redux
+ */
+export const initialState: UserState = {
+  id: 0,
+  name: "",
+  username: "",
+  email: "",
+  status: LoginStatus.IDLE,
+  regStatus: LoginStatus.IDLE,
+  address: {
+    street: "",
+    suite: "",
+    city: "",
+    zipcode: "",
+    geo: {
+      lat: 0,
+      lng: 0,
+    },
+  },
+};
