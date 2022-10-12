@@ -17,55 +17,15 @@ export default function ProfileScreen({
 }: RootTabScreenProps<"TabTwo">) {
   const dispatch = useAppDispatch();
 
-  const [userData, setUserData] = useState<UserSample[]>([]);
-  //const [inputText, setInputText] = useState<string>("");
-
-  const [buttonClicked, setButtonClicked] = useState(false);
-
-  //getUsers();
-
-  const update = async () => {
-    setUserData(await getUser());
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Sample user data from jsonplaceholder.com
-      </Text>
       <Button
-        title="Click to fetch data"
+        title="Logout"
         onPress={() => {
-          update();
-          setButtonClicked(true);
+          dispatch(logoutUser());
+          navigation.dispatch(StackActions.replace("SignIn"));
         }}
       />
-      <Text></Text>
-      <Button
-        title="Clear data"
-        onPress={() => {
-          setButtonClicked(false);
-          setUserData([]);
-        }}
-      />
-      <View style={styles.container}>
-        <Text>{JSON.stringify(userData[0])}</Text>
-        {buttonClicked == true ? (
-          <Image
-            source={{
-              uri: "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80",
-            }}
-            style={{ width: 200, height: 200, marginTop: 20, marginBottom: 20 }}
-          />
-        ) : null}
-        <Button
-          title="Logout"
-          onPress={() => {
-            dispatch(logoutUser());
-            navigation.dispatch(StackActions.replace("SignIn"));
-          }}
-        />
-      </View>
     </View>
   );
 }
