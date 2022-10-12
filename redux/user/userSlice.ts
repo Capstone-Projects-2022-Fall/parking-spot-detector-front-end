@@ -12,10 +12,14 @@ import * as Crypto from "expo-crypto";
  */
 export const fetchUserThunk = createAsyncThunk(
   "user/fetchUser",
-  async (email: string) => {
+  async (cred: string[]) => {
+    let hashedUserPass = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      cred[1]
+    );
     try {
       const response = await axios.get<UserState[]>(
-        "https://jsonplaceholder.typicode.com/users/?email=" + email,
+        "https://jsonplaceholder.typicode.com/users/?email=" + cred[0],
         {
           headers: {
             Accept: "application/json",
@@ -23,9 +27,18 @@ export const fetchUserThunk = createAsyncThunk(
         }
       );
       let data = response.data[0];
+
+      let hashedDataPass = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        data.username
+      );
+
       if (response.data.length < 1) {
         alert("Invalid username");
         throw console.log("Invalid Username");
+      } else if (hashedUserPass != hashedDataPass) {
+        alert("Invalid password");
+        throw console.log("Invalid password");
       }
       console.log("Register user response " + JSON.stringify(data));
       return data;
