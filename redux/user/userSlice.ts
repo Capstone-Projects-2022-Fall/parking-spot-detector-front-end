@@ -2,6 +2,7 @@ import { RootState } from "../store";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { LoginStatus, UserState, initialState } from "./index";
+import * as Crypto from "expo-crypto";
 
 // TODO user user object and check password here? Also check all responses and trow proper alerts/logs.
 /**
@@ -39,7 +40,7 @@ export const fetchUserThunk = createAsyncThunk(
 );
 
 /**
- * Thunk function for posting new user/registration using axios
+ * Thunk function for posting new user/registration using axios and hashing the password
  * @param user The user object to be posted as a registered user
  */
 export const registerUserThunk = createAsyncThunk(
@@ -47,6 +48,10 @@ export const registerUserThunk = createAsyncThunk(
   "user/register",
   // callback function
   async (user: UserState) => {
+    user.username = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      user.username
+    );
     try {
       // configure header's Content-Type as JSON
       const config = {

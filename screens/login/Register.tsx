@@ -94,6 +94,9 @@ export default function RegisterScreen() {
             } else if (userFirstName.length < 1 || userLastName.length < 1) {
               alert("Name field missing");
             } else {
+              data.name = userFirstName + " " + userLastName;
+              data.email = userEmail;
+              data.username = userPass1;
               dispatch(registerUserThunk(data));
             }
           }}
