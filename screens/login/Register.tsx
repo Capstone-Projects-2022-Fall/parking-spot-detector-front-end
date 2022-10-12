@@ -1,7 +1,7 @@
 import { Text, View } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Image,
@@ -11,93 +11,155 @@ import {
   Platform,
 } from "react-native";
 import { Button } from "native-base";
+import { useAppDispatch } from "../../hooks/hooks";
+import { registerUser } from "../../redux/user/userSlice";
+import { User } from "../../redux/user/index";
 
-// export default function RegisterScreen() {
-//   return (
-//     <View
-//       style={styles.container}
-//       lightColor="#eee"
-//       darkColor="rgba(255,255,255,0.1)"
-//     >
-//       <Text> *Registration Screen*</Text>
-//     <Button>Button</Button>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-// });
-export default class SignUp extends React.Component {
-  state = {
-    username: "",
-    password: "",
-    email: "",
-    phone_number: "",
-  };
-  onChangeText = (key: string, val: string) => {
-    this.setState({ [key]: val });
-  };
-  signUp = async () => {
-    const { username, password, email, phone_number } = this.state;
-    try {
-      // here place your signup logic
-      console.log("user successfully signed up!: ");
-    } catch (err) {
-      console.log("error signing up: ", err);
-    }
+export default function RegisterScreen() {
+  var user: User = {
+    userId: 0,
+    userName: "testName",
+    email: "testMail",
+    password: "testPass",
+    phone: 5555555555,
   };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}> Parking Spot Detector</Text>
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPass, setUserPass] = useState("");
+  const [userPhone, setUserPhone] = useState(0);
 
-        <Image
-          style={styles.image}
-          source={require("../../assets/images/parking_logo.png")}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          autoCapitalize="none"
-          placeholderTextColor="white"
-          onChangeText={(val) => this.onChangeText("username", val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry={true}
-          autoCapitalize="none"
-          placeholderTextColor="white"
-          onChangeText={(val) => this.onChangeText("password", val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          autoCapitalize="none"
-          placeholderTextColor="white"
-          onChangeText={(val) => this.onChangeText("email", val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          autoCapitalize="none"
-          placeholderTextColor="white"
-          onChangeText={(val) => this.onChangeText("phone_number", val)}
-        />
-        <Button style={styles.regBtn} onPress={this.signUp}>
-          {" "}
-          Register{" "}
-        </Button>
-      </View>
-    );
-  }
+  var dispatch = useAppDispatch();
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}> Parking Spot Detector</Text>
+
+      <Image
+        style={styles.image}
+        source={require("../../assets/images/parking_logo.png")}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        autoCapitalize="none"
+        placeholderTextColor="white"
+        onChangeText={(val) => setUserName(val)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry={true}
+        autoCapitalize="none"
+        placeholderTextColor="white"
+        onChangeText={(val) => setUserEmail(val)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        autoCapitalize="none"
+        placeholderTextColor="white"
+        onChangeText={(val) => setUserPass(val)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        autoCapitalize="none"
+        placeholderTextColor="white"
+        onChangeText={(val) => setUserPhone(Number(val))}
+      />
+      <Button
+        style={styles.regBtn}
+        onPress={() => {
+          dispatch(registerUser(user));
+        }}
+      >
+        {" "}
+        Register{" "}
+      </Button>
+    </View>
+  );
 }
+
+// export default class SignUp extends React.Component {
+//   state = {
+//     username: "",
+//     password: "",
+//     email: "",
+//     phone_number: "",
+//   };
+//   onChangeText = (key: string, val: string) => {
+//     this.setState({ [key]: val });
+//   };
+//   signUp = async () => {
+//     const { username, password, email, phone_number } = this.state;
+//     try {
+//       // here place your signup logic
+//       console.log("user successfully signed up!: ");
+//     } catch (err) {
+//       console.log("error signing up: ", err);
+//     }
+//   };
+
+//   render() {
+//     var user: User = {
+//       userName: "testName",
+//       email: "testMail",
+//       password: "testPass",
+//       phone: 5555555555,
+//     };
+
+//     var dispatch = useAppDispatch();
+//     return (
+//       <View style={styles.container}>
+//         <Text style={styles.title}> Parking Spot Detector</Text>
+
+//         <Image
+//           style={styles.image}
+//           source={require("../../assets/images/parking_logo.png")}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Username"
+//           autoCapitalize="none"
+//           placeholderTextColor="white"
+//           onChangeText={(val) => this.onChangeText("username", val)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Password"
+//           secureTextEntry={true}
+//           autoCapitalize="none"
+//           placeholderTextColor="white"
+//           onChangeText={(val) => this.onChangeText("password", val)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Email"
+//           autoCapitalize="none"
+//           placeholderTextColor="white"
+//           onChangeText={(val) => this.onChangeText("email", val)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Phone Number"
+//           autoCapitalize="none"
+//           placeholderTextColor="white"
+//           onChangeText={(val) => this.onChangeText("phone_number", val)}
+//         />
+//         <Button
+//           style={styles.regBtn}
+//           onPress={() => {
+//             dispatch(registerUser(user));
+//             this.signUp;
+//           }}
+//         >
+//           {" "}
+//           Register{" "}
+//         </Button>
+//       </View>
+//     );
+//   }
+// }
 
 const styles = StyleSheet.create({
   input: {
