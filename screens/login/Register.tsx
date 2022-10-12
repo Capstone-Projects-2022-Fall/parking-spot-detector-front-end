@@ -12,7 +12,8 @@ export default function RegisterScreen() {
   const [userLastName, setLastName] = useState("");
 
   const [userEmail, setUserEmail] = useState("");
-  const [userPass, setUserPass] = useState("");
+  const [userPass1, setUserPass1] = useState("");
+  const [userPass2, setUserPass2] = useState("");
 
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -26,7 +27,9 @@ export default function RegisterScreen() {
       // Clear input text states.
       setFirstName("");
       setLastName("");
-      setUserPass("");
+      setUserPass1("");
+      setUserPass2("");
+
       // Logout user to start with fresh state.
       dispatch(logoutUser());
       alert("Successful Registration. Sign in to continue");
@@ -69,7 +72,7 @@ export default function RegisterScreen() {
           autoCapitalize="none"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
-          onChangeText={(val) => setUserPass(val)}
+          onChangeText={(val) => setUserPass1(val)}
         />
         <TextInput
           style={styles.input}
@@ -77,16 +80,22 @@ export default function RegisterScreen() {
           autoCapitalize="none"
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
-          onChangeText={(val) => setUserPass(val)}
+          onChangeText={(val) => setUserPass2(val)}
         />
         <Button
           style={styles.regBtn}
           onPress={() => {
-            data.name = userFirstName + userLastName;
-            data.email = userEmail;
-            data.username = userPass;
-
-            dispatch(registerUserThunk(data));
+            if (userPass1 == userPass2 && userPass1.length < 8) {
+              alert("Password must be 8 characters minimum");
+            } else if (userPass1 != userPass2) {
+              alert("Passwords do not match");
+            } else if (userEmail.length < 1) {
+              alert("Invalid email address");
+            } else if (userFirstName.length < 1 || userLastName.length < 1) {
+              alert("Name field missing");
+            } else {
+              dispatch(registerUserThunk(data));
+            }
           }}
         >
           Register
@@ -132,6 +141,5 @@ const styles = StyleSheet.create({
   image: {
     width: "50%",
     resizeMode: "contain",
-    // marginBottom: 40,
   },
 });
