@@ -24,6 +24,7 @@ const initialState: UserState = {
   },
 };
 
+// TODO user user object and check password here? Also check all responses and trow proper alerts/logs.
 /**
  * Thunk for fetching user using axios
  * @param email The email of the user
@@ -34,19 +35,24 @@ export const fetchUserAsync = createAsyncThunk(
   async (email: string) => {
     try {
       const response = await axios.get<UserState[]>(
-        "https://jsonplaceholder.typicode.com/users/?email=" + email
+        "https://jsonplaceholder.typicode.com/users/?email=" + email,
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
       );
       let data = response.data[0];
       if (response.data.length < 1) {
         alert("Invalid username");
-        throw console.warn("Invalid Username");
+        throw console.log("Invalid Username");
       }
-      console.log(response.data);
+      console.log("Register user response " + JSON.stringify(data));
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error message: ", error.message);
-        throw error;
+        throw console.warn("Invalid Username");
       }
       throw error;
     }
@@ -67,15 +73,108 @@ export const registerUser = createAsyncThunk(
       const config = {
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
       };
       // make request to backend
-      await axios.post("/api/user/register", JSON.stringify({ user }), config);
+      const { data } = await axios.post<User>(
+        "https://3d7f29ff-a181-4b53-9204-f5b87bc7ef86.mock.pstmn.io/register",
+        JSON.stringify({ user }),
+        config
+      );
+
+      // Should contain success response JSON.stringify(data) === '"success..."';
+      console.log("Register user response " + JSON.stringify(data));
+
+      return data;
     } catch (error) {
       // return custom error message from API if any
       if (axios.isAxiosError(error)) {
-        console.log("error message: ", error.message);
+        console.warn("error message: ", error.message);
+        return error.message;
       }
+      console.warn("Unexpected error registering user");
+      return "Unexpected error registering user";
+    }
+  }
+);
+
+/**
+ * Thunk function for posting new user/registration using axios
+ * @param user The user object to be posted as a registered user
+ */
+export const updateUserProfile = createAsyncThunk(
+  // action type string
+  "user/profile",
+  // callback function
+  async (user: User) => {
+    try {
+      // configure header's Content-Type as JSON
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      };
+      // make request to backend
+      const { data } = await axios.put<User>(
+        "https://3d7f29ff-a181-4b53-9204-f5b87bc7ef86.mock.pstmn.io/profile/" +
+          user.userId,
+        JSON.stringify({ user }),
+        config
+      );
+
+      // Should contain success response JSON.stringify(data) === '"success ..."';
+      console.log("Update user profile response " + JSON.stringify(data));
+      // If not success throw alert for user already registered.
+
+      return data;
+    } catch (error) {
+      // return custom error message from API if any
+      if (axios.isAxiosError(error)) {
+        console.warn("error message: ", error.message);
+        return error.message;
+      }
+      console.warn("Unexpected error registering user");
+      return "Unexpected error registering user";
+    }
+  }
+);
+
+/**
+ * Thunk function for posting new user/registration using axios
+ * @param user The user object to be posted as a registered user
+ */
+export const deleteUser = createAsyncThunk(
+  // action type string
+  "user/delete",
+  // callback function
+  async (user: User) => {
+    try {
+      // configure header's Content-Type as JSON
+      const config = {
+        headers: {
+          Accept: "application/json",
+        },
+      };
+      // make request to backend
+      const { data } = await axios.delete<User>(
+        "https://3d7f29ff-a181-4b53-9204-f5b87bc7ef86.mock.pstmn.io/profile/" +
+          user.userId
+      );
+
+      // Should contain success response JSON.stringify(data) === '"success..."';
+      console.log("Deleting user response " + JSON.stringify(data));
+
+      return data;
+    } catch (error) {
+      // return custom error message from API if any
+      if (axios.isAxiosError(error)) {
+        console.warn("error message: ", error.message);
+        return error.message;
+      }
+      console.warn("Unexpected error registering user");
+      return "Unexpected error registering user";
     }
   }
 );
@@ -117,7 +216,22 @@ export const userSlice = createSlice({
       })
       .addCase(fetchUserAsync.rejected, (state) => {
         state.status = LoginStatus.FAILED;
-      });
+      })
+      // **************** User Registration *************************
+      // Update with extra cases if needed later.
+      .addCase(registerUser.pending, (state) => {})
+      .addCase(registerUser.fulfilled, (state, action) => {})
+      .addCase(registerUser.rejected, (state) => {})
+      // **************** User Profile updating *************************
+      // Update with extra cases if needed later.
+      .addCase(updateUserProfile.pending, (state) => {})
+      .addCase(updateUserProfile.fulfilled, (state, action) => {})
+      .addCase(updateUserProfile.rejected, (state) => {})
+      // // **************** User delete *************************
+      // // Update with extra cases if needed later.
+      .addCase(deleteUser.pending, (state) => {})
+      .addCase(deleteUser.fulfilled, (state, action) => {})
+      .addCase(deleteUser.rejected, (state) => {});
   },
 });
 
