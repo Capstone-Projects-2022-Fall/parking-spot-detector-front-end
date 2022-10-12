@@ -4,6 +4,10 @@ import { Platform, StyleSheet } from "react-native";
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 
+/**
+ * The ModalScreen view accessed through the info icon on the home screen.
+ * @returns {JSX.Element}
+ */
 export default function ModalScreen() {
   return (
     <View style={styles.container}>
@@ -21,6 +25,9 @@ export default function ModalScreen() {
   );
 }
 
+/**
+ *
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
