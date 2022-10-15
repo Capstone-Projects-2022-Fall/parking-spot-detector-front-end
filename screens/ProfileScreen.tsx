@@ -1,10 +1,4 @@
-import {
-  Button,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Switch, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 
 import { Text, View } from "../components/Themed";
@@ -26,8 +20,12 @@ export default function ProfileScreen({
   const [userLastName, setLastName] = useState("");
 
   const [userEmail, setUserEmail] = useState("");
-  const [userPass, setUserPass] = useState("");
+  const [userPass1, setUserPass1] = useState("");
+  const [userPass2, setUserPass2] = useState("");
+
   const [userAddress, setUserAddress] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -76,35 +74,14 @@ export default function ProfileScreen({
           />
           <TextInput
             style={styles.input}
-            placeholder="Address line 1"
+            placeholder="Phone number"
             autoCapitalize="none"
             placeholderTextColor="#003f5c"
-            onChangeText={(val) => setUserAddress(val)}
+            onChangeText={(val) => setUserEmail(val)}
           />
           <TextInput
             style={styles.input}
-            placeholder="Address line 2 (optional)"
-            autoCapitalize="none"
-            placeholderTextColor="#003f5c"
-            onChangeText={(val) => setUserAddress(val)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="City"
-            autoCapitalize="none"
-            placeholderTextColor="#003f5c"
-            onChangeText={(val) => setUserAddress(val)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="State"
-            autoCapitalize="none"
-            placeholderTextColor="#003f5c"
-            onChangeText={(val) => setUserAddress(val)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Zip code"
+            placeholder="Address"
             autoCapitalize="none"
             placeholderTextColor="#003f5c"
             onChangeText={(val) => setUserAddress(val)}
@@ -115,7 +92,7 @@ export default function ProfileScreen({
             autoCapitalize="none"
             placeholderTextColor="#003f5c"
             secureTextEntry={true}
-            onChangeText={(val) => setUserPass(val)}
+            onChangeText={(val) => setUserPass1(val)}
           />
           <TextInput
             style={styles.input}
@@ -123,7 +100,7 @@ export default function ProfileScreen({
             autoCapitalize="none"
             placeholderTextColor="#003f5c"
             secureTextEntry={true}
-            onChangeText={(val) => setUserPass(val)}
+            onChangeText={(val) => setUserPass2(val)}
           />
           <TouchableOpacity style={styles.logoutBtn} onPress={() => {}}>
             <Text>Update</Text>
