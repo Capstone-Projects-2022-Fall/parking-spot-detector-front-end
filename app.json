@@ -9,7 +9,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/parking_spot_logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
