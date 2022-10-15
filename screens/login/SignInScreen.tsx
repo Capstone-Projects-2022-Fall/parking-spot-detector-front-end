@@ -30,17 +30,18 @@ export default function SignInScreen() {
 
   // Listen for changes on user.status and allow login if credentials match.
   useEffect(() => {
-    if (user.status == LoginStatus.SUCCEEDED && password == user.username) {
+    if (user.status == LoginStatus.SUCCEEDED) {
       setEmail("");
       setPassword("");
       navigation.dispatch(StackActions.replace("Root"));
-    } else if (
-      user.status == LoginStatus.SUCCEEDED &&
-      password != user.username &&
-      user.id != 0
-    ) {
-      alert("Incorrect password");
     }
+    // } else if (
+    //   user.status == LoginStatus.SUCCEEDED &&
+    //   password != user.username &&
+    //   user.id != 0
+    // ) {
+    //   alert("Incorrect password");
+    // }
   }, [user.status]);
 
   return (
@@ -56,10 +57,7 @@ export default function SignInScreen() {
         source={require("../../assets/images/parking_logo.png")}
       />
       <Text style={{ color: "red" }}>
-        {" "}
-        "Enter an email from:{"\n"}
-        https://jsonplaceholder.typicode.com/users{"\n"}example:
-        email=Sincere@april.biz password=Bret"
+        Test Login{"\n"}use: email=test@email.com password=password"
       </Text>
       <View style={styles.inputView}>
         <TextInput
@@ -83,7 +81,7 @@ export default function SignInScreen() {
       <TouchableHighlight
         style={styles.loginBtn}
         onPress={() => {
-          dispatch(fetchUserThunk(email));
+          dispatch(fetchUserThunk([email, password]));
           console.log("Email: " + email + " " + "Password: " + password);
         }}
       >

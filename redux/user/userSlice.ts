@@ -1,37 +1,49 @@
 import { RootState } from "../store";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { LoginStatus, UserState, initialState } from "./index";
+import { LoginStatus, initialState, User } from "./index";
+import * as Crypto from "expo-crypto";
 
-// TODO user user object and check password here? Also check all responses and trow proper alerts/logs.
 /**
  * Thunk for fetching user using axios
  * @param email The email of the user
- * @return {UserState} The retrieved user state
+ * @return {User} The retrieved user state
  */
 export const fetchUserThunk = createAsyncThunk(
   "user/fetchUser",
-  async (email: string) => {
+  async (cred: string[]) => {
+    let hashedUserPass = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      cred[1]
+    );
     try {
-      const response = await axios.get<UserState[]>(
-        "https://jsonplaceholder.typicode.com/users/?email=" + email,
+      const response = await axios.get<User>(
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users?email=" +
+          cred[0],
         {
           headers: {
             Accept: "application/json",
           },
         }
       );
-      let data = response.data[0];
-      if (response.data.length < 1) {
-        alert("Invalid username");
-        throw console.log("Invalid Username");
+      let data = response.data;
+      if ((response.status = 200)) {
+        if (hashedUserPass != data.password_hash) {
+          console.log(response.status);
+          alert("Invalid password or email");
+          throw console.log("Invalid password or email");
+        } else {
+          console.log(response.status);
+          return data;
+        }
       }
-      console.log("Register user response " + JSON.stringify(data));
+
+      console.log("User login response " + JSON.stringify(data));
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("error message: ", error.message);
-        throw console.warn("Invalid Username");
+        throw console.warn("Network error");
       }
       throw error;
     }
@@ -39,14 +51,18 @@ export const fetchUserThunk = createAsyncThunk(
 );
 
 /**
- * Thunk function for posting new user/registration using axios
+ * Thunk function for posting new user/registration using axios and hashing the password
  * @param user The user object to be posted as a registered user
  */
 export const registerUserThunk = createAsyncThunk(
   // action type string
   "user/register",
   // callback function
-  async (user: UserState) => {
+  async (user: User) => {
+    user.password_hash = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      user.password_hash
+    );
     try {
       // configure header's Content-Type as JSON
       const config = {
@@ -56,16 +72,19 @@ export const registerUserThunk = createAsyncThunk(
         },
       };
       // make request to backend
-      const { data } = await axios.post<UserState>(
-        "https://3d7f29ff-a181-4b53-9204-f5b87bc7ef86.mock.pstmn.io/register",
-        JSON.stringify({ user }),
+      const { data } = await axios.post<User>(
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users",
+        user,
         config
       );
 
       // Should contain success response JSON.stringify(data) === '"success..."';
       console.log("Register user response " + JSON.stringify(data));
-
-      return data;
+      if (JSON.stringify(data) == '{"status":"ok"}') {
+        return data;
+      } else {
+        throw alert("Error registerning user");
+      }
     } catch (error) {
       // return custom error message from API if any
       if (axios.isAxiosError(error)) {
@@ -86,7 +105,7 @@ export const updateUserProfileThunk = createAsyncThunk(
   // action type string
   "user/profile",
   // callback function
-  async (user: UserState) => {
+  async (user: User) => {
     try {
       // configure header's Content-Type as JSON
       const config = {
@@ -96,10 +115,10 @@ export const updateUserProfileThunk = createAsyncThunk(
         },
       };
       // make request to backend
-      const { data } = await axios.put<UserState>(
-        "https://3d7f29ff-a181-4b53-9204-f5b87bc7ef86.mock.pstmn.io/profile/" +
+      const { data } = await axios.put<User>(
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users" +
           user.id,
-        JSON.stringify({ user }),
+        user,
         config
       );
 
@@ -128,7 +147,7 @@ export const deleteUserThunk = createAsyncThunk(
   // action type string
   "user/delete",
   // callback function
-  async (user: UserState) => {
+  async (user: User) => {
     try {
       // configure header's Content-Type as JSON
       const config = {
@@ -137,8 +156,8 @@ export const deleteUserThunk = createAsyncThunk(
         },
       };
       // make request to backend
-      const { data } = await axios.delete<UserState>(
-        "https://3d7f29ff-a181-4b53-9204-f5b87bc7ef86.mock.pstmn.io/profile/" +
+      const { data } = await axios.delete<User>(
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users" +
           user.id
       );
 
@@ -166,15 +185,18 @@ export const userSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    currentUser: (state, action: PayloadAction<UserState>) => {
+    currentUser: (state, action: PayloadAction<User>) => {
       state = action.payload;
     },
     logoutUser: (state) => {
-      state.address = initialState.address;
       state.id = initialState.id;
+      state.first_name = initialState.first_name;
+      state.last_name = initialState.last_name;
       state.email = initialState.email;
-      state.name = initialState.name;
-      state.username = initialState.username;
+      state.phone_number = initialState.phone_number;
+      state.password_hash = initialState.password_hash;
+      state.handicap = initialState.handicap;
+      state.address = initialState.address;
       state.status = LoginStatus.IDLE;
       state.regStatus = LoginStatus.IDLE;
     },
@@ -189,10 +211,13 @@ export const userSlice = createSlice({
       .addCase(fetchUserThunk.fulfilled, (state, action) => {
         state.id = action.payload!.id;
         state.status = LoginStatus.SUCCEEDED;
-        state.name = action.payload!.name;
-        state.username = action.payload!.username;
-        state.email = action.payload!.email;
-        state.address = action.payload?.address;
+        state.first_name = action.payload.first_name;
+        state.last_name = action.payload.last_name;
+        state.handicap = action.payload.handicap;
+        state.email = action.payload.email;
+        state.phone_number = action.payload.phone_number;
+        state.password_hash = action.payload.password_hash;
+        state.address = action.payload.address;
       })
       .addCase(fetchUserThunk.rejected, (state) => {
         state.status = LoginStatus.FAILED;
