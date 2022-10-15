@@ -17,10 +17,8 @@ export default function HomeScreen({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Welcome {user.name}
+        Welcome {user.first_name} {user.last_name}
         {"\n"}Email: {user.email}
-        {"\n"}Username: {user.username}
-        {"\n"}City: {user.address?.city}
         {"\n"}LoginStatus: {user.status}
       </Text>
       <Image

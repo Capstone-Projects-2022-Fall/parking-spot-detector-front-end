@@ -57,10 +57,7 @@ export default function SignInScreen() {
         source={require("../../assets/images/parking_logo.png")}
       />
       <Text style={{ color: "red" }}>
-        {" "}
-        "Enter an email from:{"\n"}
-        https://jsonplaceholder.typicode.com/users{"\n"}example:
-        email=Sincere@april.biz password=Bret"
+        Test Login{"\n"}use: email=test@email.com password=password"
       </Text>
       <View style={styles.inputView}>
         <TextInput
