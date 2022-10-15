@@ -1,32 +1,4 @@
-// For redux
-export interface UserState {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  status:
-    | LoginStatus.IDLE
-    | LoginStatus.LOADING
-    | LoginStatus.SUCCEEDED
-    | LoginStatus.FAILED;
-  address?: {
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-    geo: {
-      lat: number;
-      lng: number;
-    };
-  };
-}
-
-export interface User {
-  userName: string;
-  email: string;
-  password: string;
-  phone: number;
-}
+// For redux user slice
 
 export enum LoginStatus {
   IDLE = "idle",
@@ -34,3 +6,37 @@ export enum LoginStatus {
   SUCCEEDED = "succeeded",
   FAILED = "failed",
 }
+
+export interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  password_hash: string;
+  handicap: string;
+  address: string;
+  regStatus:
+    | LoginStatus.IDLE
+    | LoginStatus.LOADING
+    | LoginStatus.SUCCEEDED
+    | LoginStatus.FAILED;
+  status:
+    | LoginStatus.IDLE
+    | LoginStatus.LOADING
+    | LoginStatus.SUCCEEDED
+    | LoginStatus.FAILED;
+}
+
+export const initialState: User = {
+  id: 0,
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone_number: "",
+  password_hash: "",
+  handicap: "",
+  address: "",
+  status: LoginStatus.IDLE,
+  regStatus: LoginStatus.IDLE,
+};

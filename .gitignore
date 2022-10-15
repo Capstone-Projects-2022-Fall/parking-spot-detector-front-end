@@ -1,6 +1,7 @@
 node_modules/
 .expo/
 dist/
+./docs
 npm-debug.*
 *.jks
 *.p8
@@ -12,3 +13,15 @@ web-build/
 
 # macOS
 .DS_Store
+docs/
+docs/modules/useColorScheme.html
+docs/modules/useCachedResources.html
+docs/modules/hooks.html
+docs/functions/useColorScheme.default.html
+docs/functions/useCachedResources.default.html
+docs/functions/hooks.useAppSelector.html
+docs/functions/hooks.useAppDispatch.html
+docs/assets/style.css
+docs/assets/search.js
+docs/assets/main.js
+screens/login/SignInScreen1.tsx
