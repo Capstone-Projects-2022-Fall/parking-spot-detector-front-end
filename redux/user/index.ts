@@ -14,7 +14,7 @@ export interface User {
   email: string;
   phone_number: string;
   password_hash: string;
-  handicap: string;
+  handicap: boolean;
   address: string;
   regStatus:
     | LoginStatus.IDLE
@@ -35,7 +35,7 @@ export const initialState: User = {
   email: "",
   phone_number: "",
   password_hash: "",
-  handicap: "",
+  handicap: false,
   address: "",
   status: LoginStatus.IDLE,
   regStatus: LoginStatus.IDLE,

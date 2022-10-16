@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Image, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
 import { useAppSelector } from "../hooks/hooks";
@@ -10,16 +9,16 @@ export default function HomeScreen({
   const user = useAppSelector((state) => state.user);
   console.log(JSON.stringify(user));
 
-  useEffect(() => {
-    // do stuff
-  }, [user]);
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
         Welcome {user.first_name} {user.last_name}
         {"\n"}Email: {user.email}
+        {"\n"}Address: {user.address}
+        {"\n"}Phone number: {user.phone_number}
+        {"\n"}Handicap status: {String(user.handicap)}
         {"\n"}LoginStatus: {user.status}
+
       </Text>
       <Image
         source={require("../assets/images/parking_spot_logo.png")}
@@ -30,8 +29,7 @@ export default function HomeScreen({
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Text>Open settings to test connection to local API.</Text>
-      <Text>Open profile to test connection to jsonplaceholder.com API.</Text>
+      <Text>Open profile tab to update your information</Text>
 
       {/* <EditScreenInfo path="/screens/HomeScreen.tsx" /> */}
     </View>
