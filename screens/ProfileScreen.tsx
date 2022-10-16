@@ -39,7 +39,7 @@ export default function ProfileScreen({
   const locationField = userAddress == "" ? "Search for address" : userAddress;
 
   return (
-    <Center w="100%">
+    <View style={styles.container}>
       <Text style={styles.title}>Update Profile</Text>
       <HStack alignItems="center" space={4}>
         <Text>Handicap?</Text>
@@ -200,16 +200,20 @@ export default function ProfileScreen({
           <Text>Delete</Text>
         </TouchableOpacity>
       </View>
-    </Center>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   button: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
   },
   input: {
     width: "70%",
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 25,
-    margin: 5,
+    marginTop: 20,
     padding: 0,
     textAlign: "center",
   },
@@ -249,6 +253,5 @@ const styles = StyleSheet.create({
   image: {
     width: "50%",
     resizeMode: "contain",
-    // marginBottom: 40,
   },
 });
