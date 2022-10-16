@@ -114,9 +114,14 @@ export const updateUserProfileThunk = createAsyncThunk(
           Accept: "application/json",
         },
       };
+
+      user.password_hash = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        user.password_hash
+      );
       // make request to backend
       const { data } = await axios.put<User>(
-        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users" +
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users?id=" +
           user.id,
         user,
         config
@@ -125,8 +130,12 @@ export const updateUserProfileThunk = createAsyncThunk(
       // Should contain success response JSON.stringify(data) === '"success ..."';
       console.log("Update user profile response " + JSON.stringify(data));
       // If not success throw alert for user already registered.
-
-      return data;
+      if (JSON.stringify(data) == '{"status":"ok"}') {
+        alert("User profile updated successfully");
+        return data;
+      } else {
+        throw alert("Error registerning user");
+      }
     } catch (error) {
       // return custom error message from API if any
       if (axios.isAxiosError(error)) {
@@ -157,14 +166,19 @@ export const deleteUserThunk = createAsyncThunk(
       };
       // make request to backend
       const { data } = await axios.delete<User>(
-        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users" +
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users?id=" +
           user.id
       );
 
       // Should contain success response JSON.stringify(data) === '"success..."';
       console.log("Deleting user response " + JSON.stringify(data));
 
-      return data;
+      if (JSON.stringify(data) == '{"status":"ok"}') {
+        alert("User profile deleted successfully");
+        return data;
+      } else {
+        throw alert("Error deleting user");
+      }
     } catch (error) {
       // return custom error message from API if any
       if (axios.isAxiosError(error)) {
@@ -186,7 +200,15 @@ export const userSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     currentUser: (state, action: PayloadAction<User>) => {
-      state = action.payload;
+      state.id = action.payload.id;
+      state.first_name = action.payload.first_name;
+      state.last_name = action.payload.last_name;
+      state.email = action.payload.email;
+      state.phone_number = action.payload.phone_number;
+      state.handicap = action.payload.handicap;
+      state.address = action.payload.address;
+      state.status = LoginStatus.IDLE;
+      state.regStatus = LoginStatus.IDLE;
     },
     logoutUser: (state) => {
       state.id = initialState.id;
@@ -209,7 +231,7 @@ export const userSlice = createSlice({
         state.status = LoginStatus.LOADING;
       })
       .addCase(fetchUserThunk.fulfilled, (state, action) => {
-        state.id = action.payload!.id;
+        state.id = action.payload.id;
         state.status = LoginStatus.SUCCEEDED;
         state.first_name = action.payload.first_name;
         state.last_name = action.payload.last_name;
@@ -234,9 +256,16 @@ export const userSlice = createSlice({
         state.regStatus = LoginStatus.FAILED;
       })
       // **************** User Profile updating *************************
-      // Update with extra cases if needed later.
+      // Update with extra cases if needed later. Keeps default password since already logged in.
       .addCase(updateUserProfileThunk.pending, (state) => {})
-      .addCase(updateUserProfileThunk.fulfilled, (state, action) => {})
+      .addCase(updateUserProfileThunk.fulfilled, (state, action) => {
+        state.first_name = action.meta.arg.first_name;
+        state.last_name = action.meta.arg.last_name;
+        state.address = action.meta.arg.address;
+        state.email = action.meta.arg.email;
+        state.phone_number = action.meta.arg.phone_number;
+        state.handicap = action.meta.arg.handicap; 
+      })
       .addCase(updateUserProfileThunk.rejected, (state) => {})
       // // **************** User delete *************************
       // // Update with extra cases if needed later.
