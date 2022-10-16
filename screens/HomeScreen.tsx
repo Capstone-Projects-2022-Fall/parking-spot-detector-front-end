@@ -1,5 +1,6 @@
 import { Image, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
+import { formatPhoneNumber } from "../constants/Formatters";
 import { useAppSelector } from "../hooks/hooks";
 import { RootTabScreenProps } from "../types";
 
@@ -15,10 +16,9 @@ export default function HomeScreen({
         Welcome {user.first_name} {user.last_name}
         {"\n"}Email: {user.email}
         {"\n"}Address: {user.address}
-        {"\n"}Phone number: {user.phone_number}
+        {"\n"}Phone number: {formatPhoneNumber(user.phone_number)}
         {"\n"}Handicap status: {String(user.handicap)}
         {"\n"}LoginStatus: {user.status}
-
       </Text>
       <Image
         source={require("../assets/images/parking_spot_logo.png")}

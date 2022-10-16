@@ -1,5 +1,5 @@
 import { StyleSheet, Switch, TextInput, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Text, View } from "../components/Themed";
 import React from "react";
@@ -14,6 +14,7 @@ import { StackActions } from "@react-navigation/native";
 import { Center } from "native-base";
 import { HStack } from "native-base";
 import { ScrollView } from "react-native";
+import { formatPhoneNumber } from "../constants/Formatters";
 
 export default function ProfileScreen({
   navigation,
@@ -52,7 +53,6 @@ export default function ProfileScreen({
               value={isEnabled}
             />
           </HStack>
-
           <TextInput
             style={styles.input}
             placeholder="First name"
@@ -72,18 +72,23 @@ export default function ProfileScreen({
           <TextInput
             style={styles.input}
             placeholder="Email"
+            textContentType="emailAddress"
             value={userEmail}
             autoCapitalize="none"
             placeholderTextColor="#003f5c"
             onChangeText={(val) => setUserEmail(val)}
           />
+
           <TextInput
             style={styles.input}
             placeholder="Phone number"
-            value={userPhone}
-            autoCapitalize="none"
+            textContentType="telephoneNumber"
+            dataDetectorTypes="phoneNumber"
+            keyboardType="phone-pad"
+            maxLength={14}
+            value={formatPhoneNumber(userPhone)}
             placeholderTextColor="#003f5c"
-            onChangeText={(val) => setUserPhone(val)}
+            onChangeText={(val) => setUserPhone(formatPhoneNumber(val))}
           />
           <TextInput
             style={styles.input}
