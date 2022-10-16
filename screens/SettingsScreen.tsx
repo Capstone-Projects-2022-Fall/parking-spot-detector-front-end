@@ -1,12 +1,12 @@
 import { Button, StyleSheet, Image } from "react-native";
 import axios from "../api/axios";
 import { AxiosResponse } from "axios";
-import { useState } from "react";
-import { UserSample } from "../interfaces";
-
+import { useEffect, useState } from "react";
 import { Text, View } from "../components/Themed";
 import React from "react";
 import { RootTabScreenProps } from "../types";
+import * as Location from "expo-location";
+import { set } from "immer/dist/internal";
 
 // Use this for registration screen.
 // export default function SettingsScreen({ navigation }: RootTabScreenProps<"TabTwo">) {
@@ -14,52 +14,37 @@ import { RootTabScreenProps } from "../types";
 export default function SettingsScreen({
   navigation,
 }: RootTabScreenProps<"TabThree">) {
-  const [userData, setUserData] = useState<UserSample[]>([]);
-  //const [inputText, setInputText] = useState<string>("");
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
 
-  const [buttonClicked, setButtonClicked] = useState(false);
-  console.log("User data ", userData);
+  const [address, setAddress] = useState<Location.LocationGeocodedAddress[]>(
+    []
+  );
 
-  const update = () => {
-    axios.get<UserSample[]>("parking/user").then((response: AxiosResponse) => {
-      console.log("Response ", response.data);
-      setUserData(response.data);
-    });
-  };
+  useEffect(() => {
+    (async () => {
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+
+      let place = await Location.reverseGeocodeAsync(location.coords);
+      console.log(place);
+      setAddress(place);
+    })();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Settings currently used for testing GET API requests: BaseURL:
-        "http://10.0.2.2:8080" Go to ../api/axios to change
+      <Text>
+        Lattitude: {location?.coords.latitude} {"   "}Longitude:
+        {location?.coords.longitude}
       </Text>
-      <Button
-        title="Click to fetch data"
-        onPress={() => {
-          update();
-          setButtonClicked(true);
-        }}
-      />
-      <Text></Text>
-      <Button
-        title="Clear data"
-        onPress={() => {
-          setButtonClicked(false);
-          setUserData([]);
-        }}
-      />
-      <View style={styles.container}>
-        {buttonClicked == true ? <Text>{JSON.stringify(userData)}</Text> : null}
-
-        {buttonClicked == true ? (
-          <Image
-            source={{
-              uri: "http://10.0.2.2:8080/parking/image",
-            }}
-            style={{ width: 300, height: 300, marginTop: 20 }}
-          />
-        ) : null}
-      </View>
+      <Text>
+        {address[0]?.streetNumber} {address[0]?.street}
+      </Text>
+      <Text>
+        {address[0]?.city}, {address[0]?.region} {address[0]?.postalCode}
+      </Text>
     </View>
   );
 }
