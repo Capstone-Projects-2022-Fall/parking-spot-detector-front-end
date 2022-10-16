@@ -16,6 +16,7 @@ exp://exp.host/@projects-in-computer-science/ParkingSpotDetector?release-channel
 ### Development Instructions
 
 Clone the project into your IDE
+[Follow this link to install the tools needed.](https://docs.expo.dev/get-started/installation/)
 Run npm install expo from within the cloned repository folder
 Run the command npx expo start to start the expo cli for using emulators and debugging features
 Follow the prompts
