@@ -1,6 +1,6 @@
 import { Text, View } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TextInput } from "react-native";
+import { Appearance, StyleSheet, TextInput } from "react-native";
 import { Button, Center } from "native-base";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { logoutUser, registerUserThunk } from "../../redux/user/userSlice";
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#C19FDE",
     margin: 10,
     padding: 8,
-    color: "white",
     borderRadius: 30,
     fontSize: 18,
     fontWeight: "500",
