@@ -35,13 +35,6 @@ export default function SignInScreen() {
       setPassword("");
       navigation.dispatch(StackActions.replace("Root"));
     }
-    // } else if (
-    //   user.status == LoginStatus.SUCCEEDED &&
-    //   password != user.username &&
-    //   user.id != 0
-    // ) {
-    //   alert("Incorrect password");
-    // }
   }, [user.status]);
 
   return (

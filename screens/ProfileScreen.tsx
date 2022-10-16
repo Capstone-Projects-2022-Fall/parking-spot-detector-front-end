@@ -1,10 +1,4 @@
-import {
-  Appearance,
-  StyleSheet,
-  Switch,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Switch, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 
 import { Text, View } from "../components/Themed";
@@ -45,7 +39,7 @@ export default function ProfileScreen({
   const locationField = userAddress == "" ? "Search for address" : userAddress;
 
   return (
-    <Center w="100%" style={styles.container}>
+    <Center w="100%">
       <Text style={styles.title}>Update Profile</Text>
       <HStack alignItems="center" space={4}>
         <Text>Handicap?</Text>
@@ -108,7 +102,7 @@ export default function ProfileScreen({
           textInput: {
             borderRadius: 30,
             backgroundColor: "#C19FDE",
-            height: 37,
+            height: 36,
             fontSize: 17,
             fontWeight: "600",
           },
@@ -127,10 +121,6 @@ export default function ProfileScreen({
           console.log(details);
         }}
         onFail={(error) => console.error(error)}
-        requestUrl={{
-          url: "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api",
-          useOnPlatform: "web",
-        }} // this in only required for use on the web. See https://git.io/JflFv more for details.
       />
       <Text>*Leave passwords empty if not updating*</Text>
       <TextInput
@@ -229,11 +219,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     fontSize: 18,
     fontWeight: "500",
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   deleteBtn: {
     width: "30%",

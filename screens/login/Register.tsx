@@ -1,6 +1,6 @@
 import { Text, View } from "../../components/Themed";
 import React, { useEffect, useState } from "react";
-import { Appearance, StyleSheet, TextInput } from "react-native";
+import { StyleSheet, TextInput } from "react-native";
 import { Button, Center } from "native-base";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { logoutUser, registerUserThunk } from "../../redux/user/userSlice";
