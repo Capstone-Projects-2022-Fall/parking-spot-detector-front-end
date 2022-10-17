@@ -9,8 +9,6 @@ import store from "./redux/store";
 import * as Location from "expo-location";
 import { useEffect } from "react";
 
-import React, { BackHandler } from "react-native";
-
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
@@ -20,7 +18,9 @@ export default function App() {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        alert("Some of the apps functions may not work without location!");
+        alert(
+          "Some of the apps functions may not work without precise location!"
+        );
         return;
       }
     })();
