@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "ParkingSpotDetector",
+    "name": "ParkingSpotDetectorV1",
     "owner": "projects-in-computer-science",
-    "slug": "ParkingSpotDetector",
+    "slug": "ParkingSpotDetectorv1",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

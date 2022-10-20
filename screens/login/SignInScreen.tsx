@@ -1,19 +1,22 @@
-import { Text, View } from "../../components/Themed";
 import { useNavigation, StackActions } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchUserThunk } from "../../redux/user/userSlice";
 
-import {
-  StyleSheet,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  TouchableHighlight,
-  Platform,
-} from "react-native";
-import { useEffect, useState } from "react";
+import { StyleSheet, Image } from "react-native";
+import React, { useEffect, useState } from "react";
 import { LoginStatus } from "../../redux/user";
+import {
+  Box,
+  Button,
+  Center,
+  FormControl,
+  Heading,
+  HStack,
+  Input,
+  Link,
+  VStack,
+  Text,
+} from "native-base";
 
 /**
  * The SignInScreen contains the view and functionality for user sign in.
@@ -38,121 +41,100 @@ export default function SignInScreen() {
   }, [user.status]);
 
   return (
-    <View
-      style={styles.container}
-      lightColor="#eee"
-      darkColor="rgba(255,255,255,0.1)"
-    >
-      <Text style={styles.title}> Parking Spot Detector</Text>
-
-      <Image
-        style={styles.image}
-        source={require("../../assets/images/parking_logo.png")}
-      />
-      <Text style={{ color: "red" }}>
-        Test Login{"\n"}use: email=test@email.com password=password"
-      </Text>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Enter email"
-          placeholderTextColor="#003f5c"
-          autoComplete="email"
-          onChangeText={(text) => setEmail(text)}
+    <Center w="100%">
+      <Box safeArea p="2" py="8" w="90%" maxW="290">
+        <Heading
+          size="lg"
+          alignSelf={"center"}
+          fontWeight="600"
+          color="coolGray.800"
+          _dark={{
+            color: "warmGray.50",
+          }}
+        >
+          Parking Spot Detector
+        </Heading>
+        <Image
+          style={styles.image}
+          source={require("../../assets/images/parking_logo.png")}
         />
-      </View>
 
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Enter password"
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
-        />
-      </View>
-      <TouchableHighlight
-        style={styles.loginBtn}
-        onPress={() => {
-          dispatch(fetchUserThunk([email, password]));
-          console.log("Email: " + email + " " + "Password: " + password);
-        }}
-      >
-        <Text>Click to login</Text>
-      </TouchableHighlight>
+        <Heading
+          mt="1"
+          _dark={{
+            color: "warmGray.200",
+          }}
+          color="coolGray.600"
+          fontWeight="medium"
+          size="xs"
+        >
+          Sign in to continue!
+        </Heading>
 
-      <TouchableOpacity
-        style={styles.forgot_button}
-        onPress={() => navigation.navigate("Root")}
-      >
-        <Text>Forgot Password?</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Registration");
-        }}
-      >
-        <Text style={styles.register_button}>New User? Register</Text>
-      </TouchableOpacity>
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-    </View>
+        <VStack space={3} mt="5">
+          <FormControl>
+            <FormControl.Label>Email ID</FormControl.Label>
+            <Input onChangeText={(text) => setEmail(text)} />
+          </FormControl>
+          <FormControl>
+            <FormControl.Label>Password</FormControl.Label>
+            <Input type="password" onChangeText={(text) => setPassword(text)} />
+            <Link
+              _text={{
+                fontSize: "xs",
+                fontWeight: "500",
+                color: "purple.800",
+              }}
+              alignSelf="flex-end"
+              mt="1"
+              onPress={() => navigation.navigate("Root")}
+            >
+              Forget Password?
+            </Link>
+          </FormControl>
+          <Button
+            mt="2"
+            colorScheme="purple"
+            onPress={() => {
+              dispatch(fetchUserThunk([email, password]));
+              console.log("Email: " + email + " " + "Password: " + password);
+            }}
+          >
+            Sign in
+          </Button>
+          <HStack mt="6" justifyContent="center">
+            <Text
+              fontSize="sm"
+              color="coolGray.800"
+              _dark={{
+                color: "warmGray.200",
+              }}
+            >
+              I'm a new user.{" "}
+            </Text>
+            <Link
+              _text={{
+                color: "purple.800",
+                fontWeight: "medium",
+                fontSize: "sm",
+              }}
+              onPress={() => {
+                navigation.navigate("Registration");
+              }}
+            >
+              Sign Up
+            </Link>
+          </HStack>
+        </VStack>
+      </Box>
+    </Center>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  title: {
-    fontSize: 30,
-  },
-
   image: {
-    width: "50%",
-    resizeMode: "contain",
-  },
-
-  inputView: {
-    backgroundColor: "#C19FDE",
-    borderRadius: 30,
     width: "70%",
-    height: 45,
-    marginBottom: 10,
-    marginTop: 5,
-
-    alignItems: "center",
-  },
-
-  TextInput: {
-    height: 50,
-    flex: 1,
-    padding: 10,
-    textAlign: "center",
-  },
-
-  forgot_button: {
-    height: 20,
-    marginBottom: 10,
-  },
-
-  register_button: {
-    height: 30,
-    marginBottom: 10,
-    marginTop: 10,
-  },
-
-  loginBtn: {
-    width: "80%",
-    borderRadius: 25,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 30,
-    marginBottom: 10,
-    backgroundColor: "#7059A3",
+    resizeMode: "contain",
+    alignSelf: "center",
   },
 });

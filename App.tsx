@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { NativeBaseProvider } from "native-base";
+import { extendTheme, NativeBaseProvider } from "native-base";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import useCachedResources from "./hooks/useCachedResources";
@@ -12,6 +12,12 @@ import { useEffect } from "react";
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+
+  const config = {
+    useSystemColorMode: true,
+  };
+
+  const extendedTheme = extendTheme({ config });
 
   useEffect(() => {
     (async () => {
@@ -31,7 +37,7 @@ export default function App() {
   } else {
     return (
       <Provider store={store}>
-        <NativeBaseProvider>
+        <NativeBaseProvider theme={extendedTheme}>
           <SafeAreaProvider>
             <Navigation colorScheme={colorScheme} />
             <StatusBar />
