@@ -5,7 +5,7 @@ import { RootTabScreenProps } from "../types";
 import * as Location from "expo-location";
 import * as React from "react";
 
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 
 // Use this for registration screen.
 // export default function SettingsScreen({ navigation }: RootTabScreenProps<"TabTwo">) {
@@ -14,6 +14,11 @@ export default function SettingsScreen({
   navigation,
 }: RootTabScreenProps<"TabThree">) {
   const [location, setLocation] = useState<Location.LocationObject>();
+  const [delta, setDelta] = useState([0.004, 0.007]);
+
+  // const window = Dimensions.get("window");
+  // const { width, height } = window;
+  // setDelta(LONGITUDE_DELTA = LATITUD_DELTA + width / height;)
 
   const mapRef = React.createRef<MapView>();
   const markerRef = React.createRef<Marker>();
@@ -25,31 +30,33 @@ export default function SettingsScreen({
     longitudeDelta: 0.0421,
   });
 
-  // const [address, setAddress] = useState<Location.LocationGeocodedAddress[]>(
-  //   []
-  // );
+  const homeRegion = {
+    latitude: 39.98254635424615,
+    longitude: -75.16293123076989,
+    latitudeDelta: delta[0],
+    longitudeDelta: delta[1],
+  };
 
   useEffect(() => {
     (async () => {
       let location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
 
-        timeInterval: 10,
-      });
-      mapRef.current?.animateCamera({
-        center: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-        zoom: 16,
-        // heading: Number(location.coords.heading),
+        timeInterval: 20,
       });
 
-      // mapRef.current?.animateToRegion(mapRegion);
+      mapRef.current?.animateToRegion(mapRegion);
 
       markerRef.current?.animateMarkerToCoordinate({
         latitude: Number(location?.coords.latitude),
         longitude: Number(location?.coords.longitude),
+      });
+
+      setmapRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: delta[0],
+        longitudeDelta: delta[1],
       });
 
       setLocation(location);
@@ -58,16 +65,18 @@ export default function SettingsScreen({
 
   return (
     <View style={styles.container}>
-      <Text>
-        Latitude: {location?.coords.latitude} Longitude:{" "}
-        {location?.coords.longitude}
-      </Text>
       <MapView
-        mapType="satellite"
+        provider={PROVIDER_GOOGLE}
+        initialRegion={mapRegion}
+        mapType="hybrid"
         style={styles.map}
         ref={mapRef}
-        // initialRegion={mapRegion}
       >
+        <Polyline
+          coordinates={[mapRegion, homeRegion]}
+          strokeWidth={5}
+          strokeColor="#00a8ff"
+        />
         <Marker
           image={require("../assets/images/target.png")}
           coordinate={{
@@ -77,19 +86,22 @@ export default function SettingsScreen({
           title="Marker"
         />
       </MapView>
+      <Text>
+        Latitude: {location?.coords.latitude} Longitude:{" "}
+        {location?.coords.longitude}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   map: {
-    maxHeight: "50%",
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+    height: "80%",
   },
 });
