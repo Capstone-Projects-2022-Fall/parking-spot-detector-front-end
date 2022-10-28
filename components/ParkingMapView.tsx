@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, View, Dimensions, Button, Linking, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY } from '../variables';
+import { NavigationHelpersContext, useNavigation } from "@react-navigation/native";
 
 interface MapLocation {
     latitude: number,
@@ -42,6 +43,8 @@ const RedirectButton = (props: { link: string; }) => {
 };
 
 const ParkingMapView = () => {
+    const navigation = useNavigation();
+
     const ZOOM = 0.25;
     const [currLocation, setCurrLocation] = useState<Location.LocationObject | null>(null);
 
@@ -70,11 +73,21 @@ const ParkingMapView = () => {
             <View style={styles.container}>
                 <MapView 
                     style={styles.map}
-                    provider={'google'}
+                    provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}
                     region={region}
                     loadingEnabled
                     customMapStyle={mapStyles}
+                />
+            </View>
+            <Separator />
+            <View style={styles.createArea}>
+                <Button 
+                    color={'white'}
+                    title={'Create Parking Area'}
+                    onPress={() => {
+                        navigation.navigate("CreateParkingArea");
+                    }}
                 />
             </View>
             <Separator />
@@ -106,10 +119,17 @@ const styles = StyleSheet.create({
     },
     redirect: {
         backgroundColor: '#49a429',
-        padding: '2.5%',
-        borderRadius: 20,
+        padding: '1.25%',
+        borderRadius: 15,
         width: '90%',
         marginLeft: '2.5%'
+    },
+    createArea: {
+        backgroundColor: "#8a00c2",
+        padding: '1.25%',
+        borderRadius: 15,
+        width: '90%',
+        marginLeft: '2.5%',
     }
 });
 
@@ -144,5 +164,6 @@ const mapStyles = [
         ]
     },
 ];
+// More info on styling Maps: https://developers.google.com/maps/documentation/javascript/style-reference
 
 export default ParkingMapView;

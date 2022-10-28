@@ -36,6 +36,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       NotFound: "*",
       SignIn: "signin",
       Registration: "registration",
+      CreateParkingArea: "createparkingarea"
     },
   },
 };

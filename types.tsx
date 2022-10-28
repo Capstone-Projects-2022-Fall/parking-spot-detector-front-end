@@ -22,6 +22,7 @@ export type RootStackParamList = {
   Registration: undefined;
   Modal: undefined;
   NotFound: undefined;
+  CreateParkingArea: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

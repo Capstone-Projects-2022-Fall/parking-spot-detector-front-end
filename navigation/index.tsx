@@ -29,6 +29,7 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
+import CreateParkingArea from "../screens/CreateParkingArea";
 
 export default function Navigation({
   colorScheme,
@@ -77,6 +78,13 @@ function RootNavigator() {
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
+
+      {/* UPDATE: add screen for creating parking area*/}
+      <Stack.Screen
+        name="CreateParkingArea"
+        component={CreateParkingArea} 
+        options={{ title: "TEST PARKING HAHH" }}
+      />
     </Stack.Navigator>
   );
 }
