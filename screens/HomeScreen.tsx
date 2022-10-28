@@ -9,6 +9,7 @@ import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Platform } from "react-native";
 import { Subscription } from "expo-modules-core";
+import { sendPushNotification } from "../notifications/notification";
 
 // ExponentPushToken[X7REOHMNL5IcMAkMS71A8v] on my device for testing
 
@@ -96,28 +97,6 @@ export default function HomeScreen({
       {/* <EditScreenInfo path="/screens/HomeScreen.tsx" /> */}
     </View>
   );
-}
-
-// Can use this function below, OR use Expo's Push Notification Tool-> https://expo.dev/notifications
-async function sendPushNotification(expoPushToken: string | undefined) {
-  const message = {
-    to: expoPushToken,
-
-    sound: "default",
-    title: "Original Title",
-    body: "And here is the body!",
-    data: { someData: "goes here, maybe parking/camera data" },
-  };
-
-  await fetch("https://exp.host/--/api/v2/push/send", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Accept-encoding": "gzip, deflate",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(message),
-  });
 }
 
 async function registerForPushNotificationsAsync() {

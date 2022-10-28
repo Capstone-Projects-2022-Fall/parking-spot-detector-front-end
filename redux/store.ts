@@ -1,4 +1,5 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import parkingReducer from "./parking/parking";
 import userReducer from "./user/userSlice";
 
 /**
@@ -8,6 +9,7 @@ import userReducer from "./user/userSlice";
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    parking: parkingReducer,
   },
 });
 
