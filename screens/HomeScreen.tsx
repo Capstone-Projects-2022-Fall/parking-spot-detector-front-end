@@ -1,7 +1,7 @@
 import { Image, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
 import { formatPhoneNumber } from "../constants/Formatters";
-import { useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { RootTabScreenProps } from "../types";
 
 import * as Device from "expo-device";
@@ -9,7 +9,8 @@ import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Platform } from "react-native";
 import { Subscription } from "expo-modules-core";
-import { sendPushNotification } from "../notifications/notification";
+import { Parking } from "../redux/parking/index";
+import { currentParking } from "../redux/parking/parking";
 
 // ExponentPushToken[X7REOHMNL5IcMAkMS71A8v] on my device for testing
 
@@ -33,6 +34,9 @@ export default function HomeScreen({
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 
+  const dispatch = useAppDispatch();
+  const parking = useAppSelector((state) => state.parking);
+
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
@@ -46,9 +50,16 @@ export default function HomeScreen({
       });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    // This will set the redux store parking object as well as the notification use state object when pressed to persist data when app is in background.
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        let parkingFromNotification: Parking = JSON.parse(
+          response.notification &&
+            JSON.stringify(response.notification.request.content.data)
+        );
+        dispatch(currentParking(parkingFromNotification));
+        console.log(response.notification.request.content.data);
+        setNotification(response.notification);
       });
 
     return () => {
@@ -77,25 +88,24 @@ export default function HomeScreen({
           Title: {notification && notification.request.content.title}{" "}
         </Text>
         <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>
-          Data:{" "}
-          {notification && JSON.stringify(notification.request.content.data)}
-        </Text>
+        <Text>Data: {JSON.stringify(parking)}</Text>
       </View>
-      <Button
+      {/* The button to send notification using fetch requests in notification.ts */}
+      {/* <Button
         title="Press to Send Notification"
         onPress={async () => {
           await sendPushNotification(expoPushToken);
         }}
-      />
+      /> */}
       <View
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Text>Open profile tab to update your information</Text>
-
-      {/* <EditScreenInfo path="/screens/HomeScreen.tsx" /> */}
+      <Image
+        style={styles.image}
+        source={{ uri: "https://picsum.photos/200/300" }}
+      />
     </View>
   );
 }
@@ -147,5 +157,10 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
+  },
+  image: {
+    resizeMode: "contain",
+    width: 200,
+    height: 300,
   },
 });
