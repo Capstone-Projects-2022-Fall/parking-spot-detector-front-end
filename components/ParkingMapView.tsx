@@ -4,7 +4,7 @@ import { StyleSheet, View, Dimensions, Button, Linking, Alert } from 'react-nati
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY } from '../variables';
-import { NavigationHelpersContext, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 interface MapLocation {
     latitude: number,
@@ -44,7 +44,6 @@ const RedirectButton = (props: { link: string; }) => {
 
 const ParkingMapView = () => {
     const navigation = useNavigation();
-
     const ZOOM = 0.25;
     const [currLocation, setCurrLocation] = useState<Location.LocationObject | null>(null);
 
@@ -65,7 +64,6 @@ const ParkingMapView = () => {
     }
 
     const GOOGLE_MAPS_REDIRECT_URL = "https://maps.google.com";
-
     Geocoder.init(GOOGLE_APIKEY);
     
     return (

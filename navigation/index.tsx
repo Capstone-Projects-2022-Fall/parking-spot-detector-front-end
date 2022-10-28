@@ -83,7 +83,7 @@ function RootNavigator() {
       <Stack.Screen
         name="CreateParkingArea"
         component={CreateParkingArea} 
-        options={{ title: "TEST PARKING HAHH" }}
+        options={{ title: "Create Parking Area" }}
       />
     </Stack.Navigator>
   );
