@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Button, Alert } from 'react-native';
+import { StyleSheet, View, Dimensions, Button, Linking, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY } from '../variables';
@@ -15,6 +15,29 @@ interface MapLocation {
 const Separator = () => {
     return (
         <View style={styles.sep} />
+    );
+};
+
+const RedirectButton = (props: { link: string; }) => {
+    const { link } = props;
+    const handleRedirect = useCallback(
+        async () => {
+            const supported = await Linking.canOpenURL(link);
+            if (!!!supported) {
+                Alert.alert(`Link ${link} invalid. Try again.`);
+                return;
+            } 
+            await Linking.openURL(link);
+        }, [link]
+    )
+    return (
+        <View style={styles.redirect}>
+            <Button
+                color={'white'}
+                title={'Go to Google Maps'}
+                onPress={handleRedirect}
+            />
+        </View>
     );
 };
 
@@ -38,7 +61,10 @@ const ParkingMapView = () => {
         longitudeDelta: ZOOM
     }
 
+    const GOOGLE_MAPS_REDIRECT_URL = "https://maps.google.com";
+
     Geocoder.init(GOOGLE_APIKEY);
+    
     return (
         <>
             <View style={styles.container}>
@@ -48,13 +74,12 @@ const ParkingMapView = () => {
                     showsUserLocation={true}
                     region={region}
                     loadingEnabled
+                    customMapStyle={mapStyles}
                 />
             </View>
             <Separator />
-            <Button
-                onPress={() => Alert.alert("Redirect to google maps")}
-                title={'Go to Google Maps'} 
-                color={'#49a429'}
+            <RedirectButton 
+                link={GOOGLE_MAPS_REDIRECT_URL}
             />
         </>
     );
@@ -74,18 +99,50 @@ const styles = StyleSheet.create({
         width: Dimensions.get("window").width,
         height: Dimensions.get("window").height * TUNE,
     },
-    testButton: {
-        padding: '1em',
-        height: '50%'
-    },
     sep: {
         marginVertical: 8,
         borderBottomColor: '#777',
         borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    redirect: {
+        backgroundColor: '#49a429',
+        padding: '2.5%',
+        borderRadius: 20,
+        width: '90%',
+        marginLeft: '2.5%'
     }
 });
 
 /* style components within Google Maps*/ 
-const mapStyles = [];
+const mapStyles = [
+    {
+        featureType: 'road',
+        elementType: 'geometry.stroke',
+        stylers: [
+            { color: "#8a00c2" }
+        ]
+    },
+    {
+        featureType: 'road',
+        elementType: "geometry.fill",
+        stylers: [
+            { color: '#e8bcf0' }
+        ]
+    },
+    {
+        featureType: 'road',
+        elementType: 'labels.text.fill',
+        stylers: [
+            { color: "#8a00c2" }
+        ]
+    },
+    {
+        featureType: 'administrative.neighborhood',
+        elementType: 'labels.text.fill',
+        stylers: [
+            { color: "#241571" }
+        ]
+    },
+];
 
 export default ParkingMapView;
