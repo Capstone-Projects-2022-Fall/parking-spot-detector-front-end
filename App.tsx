@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { NativeBaseProvider } from "native-base";
+import { extendTheme, NativeBaseProvider } from "native-base";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import useCachedResources from "./hooks/useCachedResources";
@@ -9,18 +9,24 @@ import store from "./redux/store";
 import * as Location from "expo-location";
 import { useEffect } from "react";
 
-import React, { BackHandler } from "react-native";
-
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+
+  const config = {
+    useSystemColorMode: true,
+  };
+
+  const extendedTheme = extendTheme({ config });
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        alert("Some of the apps functions may not work without location!");
+        alert(
+          "Some of the apps functions may not work without precise location!"
+        );
         return;
       }
     })();
@@ -31,7 +37,7 @@ export default function App() {
   } else {
     return (
       <Provider store={store}>
-        <NativeBaseProvider>
+        <NativeBaseProvider theme={extendedTheme}>
           <SafeAreaProvider>
             <Navigation colorScheme={colorScheme} />
             <StatusBar />

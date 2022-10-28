@@ -7,7 +7,7 @@ import * as Crypto from "expo-crypto";
 /**
  * Thunk for fetching user using axios
  * @param email The email of the user
- * @return {User} The retrieved user state
+ * @return The retrieved user state
  */
 export const fetchUserThunk = createAsyncThunk(
   "user/fetchUser",
@@ -53,6 +53,7 @@ export const fetchUserThunk = createAsyncThunk(
 /**
  * Thunk function for posting new user/registration using axios and hashing the password
  * @param user The user object to be posted as a registered user
+ * @return The result of the post user data
  */
 export const registerUserThunk = createAsyncThunk(
   // action type string
@@ -98,8 +99,9 @@ export const registerUserThunk = createAsyncThunk(
 );
 
 /**
- * Thunk function for posting new user/registration using axios
- * @param user The user object to be posted as a registered user
+ * Thunk function for updating user profile data
+ * @param user The user profile object to be updated
+ * @return The success message of the put request
  */
 export const updateUserProfileThunk = createAsyncThunk(
   // action type string
@@ -149,8 +151,9 @@ export const updateUserProfileThunk = createAsyncThunk(
 );
 
 /**
- * Thunk function for posting new user/registration using axios
- * @param user The user object to be posted as a registered user
+ * Thunk function for deleting registered users
+ * @param user The user object to be deleted
+ * @return The success message of the deletion
  */
 export const deleteUserThunk = createAsyncThunk(
   // action type string
@@ -192,7 +195,9 @@ export const deleteUserThunk = createAsyncThunk(
 );
 
 /**
- * userSlice function for handling reducers for user actions.
+ * Redux toolkit userSlice function for handling reducers/thunk actions for user actions.
+ * @param reducers The actions that may be dispacted to the redux store
+ * @param extraReducers The handling of thunk function
  */
 export const userSlice = createSlice({
   name: "user",
@@ -264,7 +269,7 @@ export const userSlice = createSlice({
         state.address = action.meta.arg.address;
         state.email = action.meta.arg.email;
         state.phone_number = action.meta.arg.phone_number;
-        state.handicap = action.meta.arg.handicap; 
+        state.handicap = action.meta.arg.handicap;
       })
       .addCase(updateUserProfileThunk.rejected, (state) => {})
       // // **************** User delete *************************
