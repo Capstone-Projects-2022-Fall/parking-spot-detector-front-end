@@ -72,11 +72,11 @@ export default function SettingsScreen({
         style={styles.map}
         ref={mapRef}
       >
-        <Polyline
+        {/* <Polyline
           coordinates={[mapRegion, homeRegion]}
           strokeWidth={5}
           strokeColor="#00a8ff"
-        />
+        /> */}
         <Marker
           image={require("../assets/images/target.png")}
           coordinate={{
