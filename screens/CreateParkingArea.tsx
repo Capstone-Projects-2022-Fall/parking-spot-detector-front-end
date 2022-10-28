@@ -1,49 +1,31 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Text } from "../components/Themed";
 import { StyleSheet, SafeAreaView, ScrollView, View, Button, Alert } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import FormData from "../components/FormData";
-import FormField from "../components/FormField";
+import FormTextField from "../components/FormTextField";
 import * as Location from 'expo-location';
 
-const ConfirmButton = () => {
-    const navigation = useNavigation();
-    return (
-        <View style={styles.confirm}>
-            <Button
-                title={'Create Area'}
-                color={'white'}
-                onPress={() => {
-                    Alert.alert("Created parking area!");
-                    navigation.navigate("Root");
-                }}
-            />
-        </View>
-    );
-}
-
 const CreateParkingArea = () => {
+    const navigation = useNavigation();
     const [formValues, handleFormChange, setFormValues] = FormData({
         name: '',
         address: '',
-        spots: 1,
-        public: false,
-        displayOnMaps: true
+        spots: 0,
+        public: '',
+        displayOnMaps: ''
     });
-    const [currLocation, setCurrLocation] = useState<Location.LocationObject | null>(null);
     const fetchCurrentLocation = useCallback(
         async () => {
             let loc = await Location.getCurrentPositionAsync({});
-            setCurrLocation(loc);
             let place = await Location.reverseGeocodeAsync(loc.coords);
             if (place[0] !== null) {
                 const { streetNumber, street, city, region, postalCode } = place[0];
+                const addrString = `${streetNumber} ${street}, ${city}, ${region} ${postalCode}`;
                 setFormValues({
                     ...formValues,
-                    address: (
-                        `${streetNumber} ${street}, ${city}, ${region} ${postalCode}`
-                    )
-                })
+                    address: addrString
+                });
             }
             else {
                 Alert.alert("Cannot access current location. Try again.");
@@ -52,21 +34,27 @@ const CreateParkingArea = () => {
         }, []
     );
 
+    function validateEntries() {
+        if (formValues.address.length <= 0) return false;
+        if (formValues.address.name <= 0) return false;
+        if (formValues.spots <= 0) return false;
+        if (formValues.address.public <= 0) return false;
+        if (formValues.address.displayOnMaps <= 0) return false;
+        return true;
+    }
+
     return (
         <SafeAreaView>
-            <ScrollView
-                bounces={false}
-            >
-                <Text style={{ fontStyle: 'italic', color: 'pink' }}>Please note that selecting 'Use Current Location' will reset all other values. {'\n'}</Text>
+            <ScrollView bounces={false}>
+                <Text style={{ 
+                    fontStyle: 'italic', color: 'pink' 
+                }}>Please note that selecting 'Use Current Location' will reset all other values. {'\n'}</Text>
                 <View>
                     <View style={{
-                        display: 'flex',
-                        flexDirection: 'row'
+                        display: 'flex', flexDirection: 'row'
                     }}>
-                        <FormField
-                            label={
-                                'Parking Area Address'
-                            }
+                        <FormTextField
+                            label={'Parking Area Address'}
                             formKey='address'
                             placeholder="Enter address..."
                             handler={handleFormChange}
@@ -79,25 +67,27 @@ const CreateParkingArea = () => {
                             />
                         </View>
                     </View>
-                    <FormField
+                    <FormTextField
                         label='Parking Area Name'
                         formKey='name'
                         placeholder="Enter name..."
                         handler={handleFormChange}
                     />
-                    <FormField
+                    <FormTextField
                         label={'Number of Spots'}
                         formKey="spots"
                         placeholder="Enter number of spots in area..."
                         handler={handleFormChange}
                     />
-                    <FormField
+                    {/* change to dropdown/buttons */}
+                    <FormTextField
                         label={'Type of area (public, private, paid)'}
                         formKey="public"
                         placeholder={'Type in "Public", "Private", or "Paid"'}
                         handler={handleFormChange}
                     />
-                    <FormField
+                    {/* change to toggle */}
+                    <FormTextField
                         label={'Display on Google Maps'}
                         formKey="displayOnMaps"
                         placeholder="Type in 'false' or 'true'"
@@ -114,7 +104,21 @@ const CreateParkingArea = () => {
                     <Text>Type of parking: {formValues.public}</Text>
                     <Text>Allow Google Maps view: {formValues.displayOnMaps}</Text>
                 </View>
-                <ConfirmButton />
+                {/* confirm button */}
+                <View style={styles.confirm}>
+                    <Button
+                        title={'Create Area'}
+                        color={'white'}
+                        onPress={() => {
+                            if (!!!validateEntries()) {
+                                Alert.alert("Not all fields are filled in or valid. Try again.");
+                                return;
+                            };
+                            Alert.alert("Created parking area!");
+                            navigation.navigate("Root");
+                        }}
+                    />
+                </View>
             </ScrollView>
         </SafeAreaView>
     )

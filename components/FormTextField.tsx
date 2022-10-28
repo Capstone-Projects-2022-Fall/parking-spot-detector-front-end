@@ -1,10 +1,7 @@
-import React from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 
-const FormField = (props: any) => {
-    const { 
-        label, placeholder, formKey, handler, textInputProps, inject = null 
-    } = props;
+const FormTextField = (props: any) => {
+    const { label, placeholder, formKey, handler, textInputProps } = props;
     return (
         <View style={styles.formFieldWrapper}>
             <Text style={styles.labelText}>
@@ -15,9 +12,7 @@ const FormField = (props: any) => {
                 placeholderTextColor={'lightgray'}
                 style={styles.formFieldText}
                 onChange={(event) => {
-                    handler(formKey, (
-                        (inject !== null) ? {inject} : event.nativeEvent.text
-                    ))
+                    handler(formKey, event.nativeEvent.text)
                 }}
                 {...textInputProps}
             />
@@ -45,4 +40,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default FormField;
+export default FormTextField;

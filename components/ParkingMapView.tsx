@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, View, Dimensions, Button, Linking, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
@@ -63,6 +63,19 @@ const ParkingMapView = () => {
         longitudeDelta: ZOOM
     }
 
+    const startLat = region.latitude,
+        startLng = region.longitude;
+    const markers: any = [
+        {
+            coors: {
+                lat: startLat,
+                lng: startLng
+            },
+            title: "Test marker",
+            desc: "For Google Maps API."
+        }
+    ];
+
     const GOOGLE_MAPS_REDIRECT_URL = "https://maps.google.com";
     Geocoder.init(GOOGLE_APIKEY);
     
@@ -76,7 +89,24 @@ const ParkingMapView = () => {
                     region={region}
                     loadingEnabled
                     customMapStyle={mapStyles}
-                />
+                >
+                    {
+                        markers.map((item: any, index: any) => {
+                            const { coors, title, desc } = item;
+                            return (
+                                <Marker
+                                    key={index}
+                                    coordinate={{
+                                        latitude: coors.lat,
+                                        longitude: coors.lng,
+                                    }}
+                                    title={title}
+                                    description={desc} 
+                                />
+                            );
+                        })
+                    }
+                </MapView>
             </View>
             <Separator />
             <View style={styles.createArea}>
