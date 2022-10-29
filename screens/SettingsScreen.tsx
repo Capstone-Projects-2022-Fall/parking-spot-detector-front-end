@@ -16,10 +16,6 @@ export default function SettingsScreen({
   const [location, setLocation] = useState<Location.LocationObject>();
   const [delta, setDelta] = useState([0.004, 0.007]);
 
-  // const window = Dimensions.get("window");
-  // const { width, height } = window;
-  // setDelta(LONGITUDE_DELTA = LATITUD_DELTA + width / height;)
-
   const mapRef = React.createRef<MapView>();
   const markerRef = React.createRef<Marker>();
 
@@ -42,7 +38,7 @@ export default function SettingsScreen({
       let location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
 
-        timeInterval: 20,
+        timeInterval: 1500,
       });
 
       mapRef.current?.animateToRegion(mapRegion);

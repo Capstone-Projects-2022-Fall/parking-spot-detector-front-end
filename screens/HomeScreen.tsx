@@ -32,7 +32,7 @@ export default function HomeScreen({
   useEffect(() => {
     let imgID = setInterval(() => {
       setImage("https://picsum.photos/200?t=" + new Date().getTime());
-    }, 2000);
+    }, 5000);
   }, [imageURL]);
 
   //************ User store****************** */
