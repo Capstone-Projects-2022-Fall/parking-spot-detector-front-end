@@ -1,23 +1,26 @@
-import { useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Text } from "../components/Themed";
-import { StyleSheet, SafeAreaView, ScrollView, View, Button, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, View, Button, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import FormData from "../components/FormData";
 import FormTextField from "../components/FormTextField";
+import FormToggleField from "../components/FormToggleField";
 import * as Location from 'expo-location';
 
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY } from '../variables';
+import axios from '../api/axios';
 
 const CreateParkingAreaScreen = () => {
     const navigation = useNavigation();
 
     const [formValues, handleFormChange, setFormValues] = FormData({
         name: '',
+        desc: '',
         address: '',
         spots: 0,
         public: '',
-        displayOnMaps: ''
+        hideFromMaps: false
     });
 
     const fetchCurrentLocation = useCallback(
@@ -44,32 +47,25 @@ const CreateParkingAreaScreen = () => {
         if (formValues.name.length <= 0) return false;
         if (formValues.spots <= 0) return false;
         if (formValues.public.length <= 0) return false;
-        if (formValues.displayOnMaps.length <= 0) return false;
+        if (formValues.hideFromMaps.length <= 0) return false;
         return true;
     }
 
-    function parseManualAddress(string: string) {
-        //const text = string.split(/[ ,]+/);
-        //console.log(text);
-
-        /* geocoding to ensure that address is real */
-        /* adding marker will be done once all info is added to DB. */
-        let confirm;
-        Geocoder.init(GOOGLE_APIKEY);
-        Geocoder.from(string)
-            .then(() => confirm = true)
-            .catch(err => {
-                confirm = false;
-                console.error(err);
-            });
-        return confirm;
-    }
-
+    const [isCorrectAddr, setHasCorrectAddr] = useState(false);
     useEffect(() => {
         if (formValues.address.length > 0) {
-            const addressCheck = parseManualAddress(formValues.address);
+            const addressCheck = () => {
+                Geocoder.init(GOOGLE_APIKEY);
+                Geocoder.from(formValues.address)
+                    .then((res) => {
+                        setHasCorrectAddr(true);
+                    })
+                    .catch(err => console.error(err));
+                console.log(isCorrectAddr);
+                return isCorrectAddr;
+            };
             setTimeout(() => {
-                if (!addressCheck) {
+                if (!!!addressCheck) {
                     Alert.alert("Address is not recognizable");
                     setFormValues({
                         ...formValues,
@@ -81,6 +77,8 @@ const CreateParkingAreaScreen = () => {
         }
     }, [formValues.address]);
 
+    const [isError, setIsError] = useState(false),
+        [message, setMessage] = useState('');
     return (
         <SafeAreaView>
             <ScrollView bounces={false}>
@@ -97,13 +95,14 @@ const CreateParkingAreaScreen = () => {
                             placeholder="Enter address..."
                             handler={handleFormChange}
                         />
-                        <View style={styles.currentLocationContainer}>
-                            <Button
-                                color={'white'}
-                                title={'Use Current \n Location'}
-                                onPress={fetchCurrentLocation}
-                            />
-                        </View>
+                        <TouchableOpacity 
+                            style={styles.currentLocationContainer}
+                            onPress={fetchCurrentLocation}
+                        >
+                            <Text style={{ fontSize: 16 }}>
+                                Use Current {'\n'} Location
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                     <Text style={{
                             color: '#ffad00', fontStyle: "italic"
@@ -129,18 +128,15 @@ const CreateParkingAreaScreen = () => {
                         placeholder="Enter number of spots in area..."
                         handler={handleFormChange}
                     />
-                    {/* change to dropdown/buttons */}
                     <FormTextField
                         label={'Type of area (public, private, paid)'}
                         formKey="public"
                         placeholder={'Type in "Public", "Private", or "Paid"'}
                         handler={handleFormChange}
                     />
-                    {/* change to toggle */}
-                    <FormTextField
-                        label={'Display on Google Maps'}
-                        formKey="displayOnMaps"
-                        placeholder="Type in 'false' or 'true'"
+                    <FormToggleField
+                        label={'Hide from Google Maps'}
+                        formKey="hideFromMaps"
                         handler={handleFormChange}
                     />
                 </View>
@@ -152,7 +148,9 @@ const CreateParkingAreaScreen = () => {
                     <Text>Name: {formValues.name}</Text>
                     <Text>Number of spots: {formValues.spots}</Text>
                     <Text>Type of parking: {formValues.public}</Text>
-                    <Text>Allow Google Maps view: {formValues.displayOnMaps}</Text>
+                    <Text>
+                        <Text style={{ fontWeight: 'bold' }}>Show on Google Maps:</Text> {String(formValues.hideFromMaps)}
+                    </Text>
                 </View>
                 {/* confirm button */}
                 <View style={styles.confirm}>
@@ -160,11 +158,41 @@ const CreateParkingAreaScreen = () => {
                         title={'Create Area'}
                         color={'white'}
                         onPress={() => {
-                            if (!!!validateEntries()) {
+                            const ve = validateEntries();
+                            if (!ve) {
                                 Alert.alert("Not all fields are filled in or valid. Try again.");
                                 return;
                             };
-                            Alert.alert("Created parking area!");
+
+                            /* connect to backend */
+                            const payload = {
+                                address: formValues.address,
+                                name: formValues.name,
+                                desc: formValues.desc,
+                                spots: formValues.spots,
+                                public: formValues.public,
+                                hideFromMaps: formValues.hideFromMaps
+                            };
+                            /* change IP address each time if running on a local machine */
+                            axios.post("http://192.168.1.153:3000/parkingarea/", payload, {
+                                headers: { 'Content-Type': 'application/json' }
+                            })
+                            .then(async (res) => {
+                                try {
+                                    const data = await res.data;
+                                    setIsError((res.status !== 200) ? true : false);
+                                    setMessage(data.message);
+                                    Alert.alert("Created parking area!");
+                                } catch (err) {
+                                    Alert.alert(`Parking area was not made. \nError: ${isError}\nMessage: ${message}`);
+                                    console.error(err);
+                                }
+                            })
+                            .catch((err) => {
+                                Alert.alert(`Parking area was not made. \nError: ${isError}\nMessage: ${message}`);
+                                console.error(err);
+                            });
+                            setHasCorrectAddr(false);
                             navigation.navigate("Root");
                         }}
                     />
@@ -182,7 +210,9 @@ const styles = StyleSheet.create({
     },
     currentLocationContainer: {
         backgroundColor: "#49a429",
-        borderRadius: 15,
+        borderRadius: 10,
+        padding: 5,
+        justifyContent: 'center',
         margin: '5%',
         marginTop: '10%'
     },

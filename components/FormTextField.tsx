@@ -24,15 +24,16 @@ const styles = StyleSheet.create({
     formFieldWrapper: {
     },
     formFieldText: {
-        fontSize: 20,
-        borderRadius: 15,
-        borderWidth: 1,
-        padding: 12,
+        fontSize: 15,
+        borderRadius: 12.5,
+        borderWidth: 0.5,
+        padding: 10,
         backgroundColor: 'white'
     },
     labelText: {
-        fontSize: 20,
-        marginBottom: 12,
+        fontSize: 18,
+        marginBottom: 15,
+        marginTop: 8,
         paddingLeft: 10,
         paddingTop: 10,
         color: '#ffad00',
