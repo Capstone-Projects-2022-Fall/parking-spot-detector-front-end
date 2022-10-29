@@ -114,7 +114,7 @@ const ParkingMapView = () => {
                     color={'white'}
                     title={'Create Parking Area'}
                     onPress={() => {
-                        navigation.navigate("CreateParkingArea");
+                        navigation.navigate("CreateParkingAreaScreen");
                     }}
                 />
             </View>

@@ -11,7 +11,7 @@ const FormTextField = (props: any) => {
                 placeholder={placeholder}
                 placeholderTextColor={'lightgray'}
                 style={styles.formFieldText}
-                onChange={(event) => {
+                onEndEditing={(event) => {
                     handler(formKey, event.nativeEvent.text)
                 }}
                 {...textInputProps}
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         paddingLeft: 10,
         paddingTop: 10,
-        color: 'purple',
+        color: '#ffad00',
         fontWeight: 'bold'
     }
 });

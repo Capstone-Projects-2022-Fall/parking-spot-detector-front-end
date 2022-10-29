@@ -29,7 +29,7 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
-import CreateParkingArea from "../screens/CreateParkingArea";
+import CreateParkingAreaScreen from "../screens/CreateParkingAreaScreen";
 
 export default function Navigation({
   colorScheme,
@@ -81,8 +81,8 @@ function RootNavigator() {
 
       {/* UPDATE: add screen for creating parking area*/}
       <Stack.Screen
-        name="CreateParkingArea"
-        component={CreateParkingArea} 
+        name="CreateParkingAreaScreen"
+        component={CreateParkingAreaScreen} 
         options={{ title: "Create Parking Area" }}
       />
     </Stack.Navigator>

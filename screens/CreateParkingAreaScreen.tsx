@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Text } from "../components/Themed";
 import { StyleSheet, SafeAreaView, ScrollView, View, Button, Alert } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
@@ -6,8 +6,12 @@ import FormData from "../components/FormData";
 import FormTextField from "../components/FormTextField";
 import * as Location from 'expo-location';
 
-const CreateParkingArea = () => {
+import Geocoder from 'react-native-geocoding';
+import { GOOGLE_APIKEY } from '../variables';
+
+const CreateParkingAreaScreen = () => {
     const navigation = useNavigation();
+
     const [formValues, handleFormChange, setFormValues] = FormData({
         name: '',
         address: '',
@@ -15,6 +19,7 @@ const CreateParkingArea = () => {
         public: '',
         displayOnMaps: ''
     });
+
     const fetchCurrentLocation = useCallback(
         async () => {
             let loc = await Location.getCurrentPositionAsync({});
@@ -36,12 +41,45 @@ const CreateParkingArea = () => {
 
     function validateEntries() {
         if (formValues.address.length <= 0) return false;
-        if (formValues.address.name <= 0) return false;
+        if (formValues.name.length <= 0) return false;
         if (formValues.spots <= 0) return false;
-        if (formValues.address.public <= 0) return false;
-        if (formValues.address.displayOnMaps <= 0) return false;
+        if (formValues.public.length <= 0) return false;
+        if (formValues.displayOnMaps.length <= 0) return false;
         return true;
     }
+
+    function parseManualAddress(string: string) {
+        //const text = string.split(/[ ,]+/);
+        //console.log(text);
+
+        /* geocoding to ensure that address is real */
+        /* adding marker will be done once all info is added to DB. */
+        let confirm;
+        Geocoder.init(GOOGLE_APIKEY);
+        Geocoder.from(string)
+            .then(() => confirm = true)
+            .catch(err => {
+                confirm = false;
+                console.error(err);
+            });
+        return confirm;
+    }
+
+    useEffect(() => {
+        if (formValues.address.length > 0) {
+            const addressCheck = parseManualAddress(formValues.address);
+            setTimeout(() => {
+                if (!addressCheck) {
+                    Alert.alert("Address is not recognizable");
+                    setFormValues({
+                        ...formValues,
+                        address: ''
+                    });
+                    return;
+                }
+            }, 3000);
+        }
+    }, [formValues.address]);
 
     return (
         <SafeAreaView>
@@ -67,10 +105,22 @@ const CreateParkingArea = () => {
                             />
                         </View>
                     </View>
+                    <Text style={{
+                            color: '#ffad00', fontStyle: "italic"
+                        }}
+                        >
+                            Refrain from adding unit/apartment numbers. {'\n'}
+                        </Text>
                     <FormTextField
                         label='Parking Area Name'
                         formKey='name'
                         placeholder="Enter name..."
+                        handler={handleFormChange}
+                    />
+                    <FormTextField 
+                        label='Parking Area Description'
+                        formKey='description'
+                        placeholder='Enter optional desription...'
                         handler={handleFormChange}
                     />
                     <FormTextField
@@ -148,4 +198,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default CreateParkingArea;
+export default CreateParkingAreaScreen;
