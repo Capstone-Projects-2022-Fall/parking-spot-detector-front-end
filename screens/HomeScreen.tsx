@@ -33,7 +33,10 @@ export default function HomeScreen({
     let imgID = setInterval(() => {
       setImage("https://picsum.photos/200?t=" + new Date().getTime());
     }, 5000);
-  }, [imageURL]);
+    return () => {
+      clearInterval(imgID);
+    };
+  });
 
   //************ User store****************** */
   const user = useAppSelector((state) => state.user);
