@@ -49,7 +49,11 @@ const CreateParkingAreaScreen = () => {
     );
 
     function validateEntries() {
+        // i got lazy here
+        const parkingTypes = ['Public', 'Private', 'Paid', 'public', 'private', 'paid', 'PUBLIC', 'PRIVATE', 'PAID'];
+        
         const { address, name, spots } = formValues;
+        if (!parkingTypes.includes(formValues.public)) return false;
         if (!usingCurrentLocation) return address.length > 0;
         return (
             name.length > 0 && spots > 0 && formValues.public.length > 0

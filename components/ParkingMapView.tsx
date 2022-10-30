@@ -15,9 +15,7 @@ interface MapLocation {
 }
 
 const Separator = () => {
-    return (
-        <View style={styles.sep} />
-    );
+    return <View style={styles.sep} />;
 };
 
 const RedirectButton = (props: { link: string; }) => {
@@ -28,7 +26,7 @@ const RedirectButton = (props: { link: string; }) => {
             if (!!!supported) {
                 Alert.alert(`Link ${link} invalid. Try again.`);
                 return;
-            } 
+            }
             await Linking.openURL(link);
         }, [link]
     )
@@ -45,7 +43,7 @@ const RedirectButton = (props: { link: string; }) => {
 
 const ParkingMapView = () => {
     const navigation = useNavigation();
-    const ZOOM = 0.25;
+    const ZOOM = 0.0625;
     const [currLocation, setCurrLocation] = useState<Location.LocationObject | null>(null);
 
     useEffect(() => {
@@ -64,8 +62,17 @@ const ParkingMapView = () => {
         longitudeDelta: ZOOM
     }
 
+    /* when a button is selected */
+    const [markerIsSelected, hasMarkerSelected] = useState(false);
+    const [selectedMarkerProps, setSelectedMarkerProps] = useState({
+        name: '', desc: '',
+        address: '', spots: 0,
+        latitude: 0, longitude: 0,
+        public: '', hideFromMaps: false
+    });
+
     const [markers, setMarkers] = useState([]);
-    const MARKER_OPACITY = 0.875, 
+    const MARKER_OPACITY = 0.875,
         MARKER_HIDE_HUE = '#ffad00',
         MARKER_NORMAL_HUE = '#49a429';
     useEffect(() => {
@@ -79,24 +86,34 @@ const ParkingMapView = () => {
                         <Marker
                             key={index}
                             coordinate={{
-                                latitude: latitude,
-                                longitude: longitude
-                            }} 
+                                latitude: latitude, longitude: longitude
+                            }}
                             title={name}
                             description={desc}
                             opacity={MARKER_OPACITY}
                             pinColor={(hideFromMaps) ? MARKER_HIDE_HUE : MARKER_NORMAL_HUE}
+                            onPress={(e) => {
+                                hasMarkerSelected(true);
+                                setSelectedMarkerProps(item);
+                                console.log(e.nativeEvent.coordinate)
+                            }}
                         >
-                            <Callout>
+                            <Callout
+                                tooltip={true}
+                                style={styles.calloutContainer}
+                            >
                                 <View>
                                     <Text>
-                                        <Text style={{fontWeight:'bold'}}>Address:</Text> {address.substring(0, aBreak) + '\n' + address.substring(aBreak+2)}
+                                        <Text style={{ fontWeight: 'bold' }}>Address: </Text>
+                                        {address.substring(0, aBreak) + '\n' + address.substring(aBreak + 2)}
                                     </Text>
                                     <Text>
-                                        <Text style={{fontWeight:'bold'}}>Type of space:</Text> {item.public}
+                                        <Text style={{ fontWeight: 'bold' }}>Type of space: </Text>
+                                        {item.public}
                                     </Text>
                                     <Text>
-                                        <Text style={{fontWeight:'bold'}}>Number of spots:</Text> {spots}
+                                        <Text style={{ fontWeight: 'bold' }}>Number of spots: </Text>
+                                        {spots}
                                     </Text>
                                 </View>
                             </Callout>
@@ -110,11 +127,11 @@ const ParkingMapView = () => {
 
     const GOOGLE_MAPS_REDIRECT_URL = "https://maps.google.com";
     Geocoder.init(GOOGLE_APIKEY);
-    
+
     return (
         <>
             <View style={styles.container}>
-                <MapView 
+                <MapView
                     style={styles.map}
                     provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}
@@ -122,14 +139,39 @@ const ParkingMapView = () => {
                     loadingEnabled
                     customMapStyle={mapStyles}
                 >
-                    {
-                        markers
-                    }
+                    {markers}
                 </MapView>
+                <View style={{ 
+                    height: 80,
+                }}>
+                    {
+                        markerIsSelected &&
+                        <>
+                            <Text style={{ fontWeight: 'bold' }}>
+                                {selectedMarkerProps.address}
+                            </Text>
+                            <View style={{ 
+                                backgroundColor: "#49a429",
+                                padding: 5,
+                                margin: 5,
+                                borderRadius: 10,
+                                width: 240
+                            }}>
+                                <Button 
+                                    title='Show More Info'
+                                    color="white"
+                                    onPress={() => {
+                                        console.log(selectedMarkerProps)
+                                    }}
+                                />
+                            </View>
+                        </>
+                    }
+                </View>
             </View>
             <Separator />
             <View style={styles.createArea}>
-                <Button 
+                <Button
                     color={'white'}
                     title={'Create Parking Area'}
                     onPress={() => {
@@ -138,7 +180,7 @@ const ParkingMapView = () => {
                 />
             </View>
             <Separator />
-            <RedirectButton 
+            <RedirectButton
                 link={GOOGLE_MAPS_REDIRECT_URL}
             />
         </>
@@ -151,7 +193,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'relative',
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#cbc3e3',
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -177,10 +219,17 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         width: '90%',
         marginLeft: '2.5%',
+    },
+    calloutContainer: {
+        backgroundColor: '#cbc3e3',
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 12,
+        padding: 8
     }
 });
 
-/* style components within Google Maps*/ 
+/* style components within Google Maps*/
 const mapStyles = [
     {
         featureType: 'road',
