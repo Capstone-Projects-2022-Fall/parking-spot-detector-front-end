@@ -74,7 +74,7 @@ export default function ProfileScreen({
         </FormControl>
         <FormControl>
           <FormControl.Label>Phone Number</FormControl.Label>
-          <Input onChangeText={(val) => setUserPhone(val)} />
+          <Input value={formatPhoneNumber(userPhone)} onChangeText={(val) => setUserPhone(formatPhoneNumber(val))} />
         </FormControl>
         <FormControl>
           <FormControl.Label>Address</FormControl.Label>
