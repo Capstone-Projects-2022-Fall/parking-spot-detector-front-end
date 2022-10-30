@@ -8,8 +8,7 @@ import FormToggleField from "../components/form/FormToggleField";
 import * as Location from 'expo-location';
 
 import Geocoder from 'react-native-geocoding';
-import { GOOGLE_APIKEY } from '../variables';
-import axios from 'axios';
+import { GOOGLE_APIKEY, LOCAL_IPV4 } from '../variables';
 /** look at ../api/axios to change URL settings in the future */
 
 const CreateParkingAreaScreen = () => {
@@ -53,25 +52,33 @@ const CreateParkingAreaScreen = () => {
         const { address, name, spots } = formValues;
         if (!usingCurrentLocation) return address.length > 0;
         return (
-            name.length > 0 && 
-            spots > 0 && 
-            formValues.public.length > 0
+            name.length > 0 && spots > 0 && formValues.public.length > 0
         );
     }
 
-    const [isCorrectAddr, setHasCorrectAddr] = useState(false);
+    const [isCorrectAddr, setHasCorrectAddr] = useState(true);
+    const [readAddress, setReadAddress] = useState('');
     useEffect(() => {
         const addressCheck = () => {
             Geocoder.init(GOOGLE_APIKEY);
             Geocoder.from(formValues.address)
                 .then(({results}) => {
-                    const latLng = results[0].geometry.location;
-                    setHasCorrectAddr(true);
-                    setFormValues({
-                        ...formValues,
-                        latitude: latLng.lat,
-                        longitude: latLng.lng
-                    })
+                    const latLng = results[0].geometry.location,
+                        formattedAddr = results[0].formatted_address;
+                    if (formValues.address.length > 0 && (latLng === undefined)) {
+                        setHasCorrectAddr(false);
+                        console.log("latLng is unavailable");
+                    } else {
+                        console.log(latLng.lat, latLng.lng);
+                        setHasCorrectAddr(true);
+                        setReadAddress(formattedAddr);
+                        setFormValues({
+                            ...formValues,
+                            latitude: latLng.lat,
+                            longitude: latLng.lng,
+                            address: (formattedAddr !== formValues.address) ? formattedAddr : formValues.address 
+                        });
+                    }
                 })
                 .catch(err => console.error(err));
             return isCorrectAddr;
@@ -86,7 +93,7 @@ const CreateParkingAreaScreen = () => {
                 return;
             }
         }, 5000);
-    }, []);
+    }, [formValues.address]);
 
     const [isError, setIsError] = useState(false),
         [message, setMessage] = useState('');
@@ -115,12 +122,12 @@ const CreateParkingAreaScreen = () => {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={{
-                            color: '#ffad00', fontStyle: "italic"
-                        }}
-                        >
-                            Refrain from adding unit/apartment numbers. {'\n'}
+                    <Text style={{ color: '#ffad00', fontStyle: "italic" }}>
+                        Refrain from adding unit/apartment numbers. {'\n'}
+                        <Text style={{ fontWeight: 'bold' }}>
+                            Please double-check for correct address; input and detected address may not be the same.
                         </Text>
+                    </Text>
                     <FormTextField
                         label='Parking Area Name'
                         formKey='name'
@@ -129,7 +136,7 @@ const CreateParkingAreaScreen = () => {
                     />
                     <FormTextField 
                         label='Parking Area Description'
-                        formKey='description'
+                        formKey='desc'
                         placeholder='Enter optional desription...'
                         handler={handleFormChange}
                     />
@@ -157,6 +164,7 @@ const CreateParkingAreaScreen = () => {
                     </Text>
                     <Text>Address: {formValues.address}</Text>
                     <Text>Name: {formValues.name}</Text>
+                    <Text style={{ padding: 1 }}>Description: {formValues.desc}</Text>
                     <Text>Number of spots: {formValues.spots}</Text>
                     <Text>Type of parking: {formValues.public}</Text>
                     <Text>
@@ -186,8 +194,8 @@ const CreateParkingAreaScreen = () => {
                                 public: formValues.public,
                                 hideFromMaps: formValues.hideFromMaps
                             };
-                            /* fix this later :-( */
-                            fetch("http://10.217.213.182:3000/parkingarea/", {
+                            /* fix this later :-(*/
+                            fetch(`http://${LOCAL_IPV4}:3000/parkingarea/`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(payload)
@@ -198,6 +206,7 @@ const CreateParkingAreaScreen = () => {
                                     setIsError(res.status !== 200);
                                     setMessage(res.statusText);
                                     Alert.alert("Created parking area!");
+                                    console.log(payload);
                                 } catch (err) {
                                     Alert.alert(`Parking area was not made. \nError: ${isError}\nMessage: ${message}`);
                                     console.error(err);

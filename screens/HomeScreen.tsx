@@ -5,6 +5,8 @@ import { useAppSelector } from "../hooks/hooks";
 import { RootTabScreenProps } from "../types";
 import ParkingMapView from '../components/ParkingMapView';
 
+/* IF YOU'RE READING THIS, THIS IS WHAT YOU SEE FROM MAPVIEW */
+
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {

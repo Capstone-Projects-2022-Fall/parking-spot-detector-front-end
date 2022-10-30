@@ -3,7 +3,7 @@ import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, Button, Linking, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
-import { GOOGLE_APIKEY } from '../variables';
+import { GOOGLE_APIKEY, LOCAL_IPV4 } from '../variables';
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
 
@@ -65,9 +65,12 @@ const ParkingMapView = () => {
     }
 
     const [markers, setMarkers] = useState([]);
-    const MARKER_OPACITY = 0.875, MARKER_HUE = '#49a429';
+    const MARKER_OPACITY = 0.875, 
+        MARKER_HIDE_OPACITY = 0.5,
+        MARKER_HIDE_HUE = '#ffad00',
+        MARKER_HUE = '#49a429';
     useEffect(() => {
-        axios.get("http://10.217.213.182:3000/parkingarea/")
+        axios.get(`http://${LOCAL_IPV4}:3000/parkingarea/`)
             .then(async (res) => {
                 const data = res.data;
                 const newMarkers = data.map((item: any, index: any) => {
@@ -82,19 +85,19 @@ const ParkingMapView = () => {
                             }} 
                             title={name}
                             description={desc}
-                            opacity={(hideFromMaps) ? 0.0 : MARKER_OPACITY}
-                            pinColor={MARKER_HUE}
+                            opacity={(hideFromMaps) ? MARKER_HIDE_OPACITY : MARKER_OPACITY}
+                            pinColor={(hideFromMaps) ? MARKER_HIDE_HUE : MARKER_HUE}
                         >
                             <Callout>
                                 <View>
                                     <Text>
-                                        <Text style={{fontWeight:'bold'}}>Address:</Text> {address.substring(0, aBreak) + '\n' + address.substring(aBreak)}
+                                        <Text style={{fontWeight:'bold'}}>Address:</Text> {address.substring(0, aBreak) + '\n' + address.substring(aBreak+2)}
                                     </Text>
                                     <Text>
                                         <Text style={{fontWeight:'bold'}}>Type of space:</Text> {item.public}
                                     </Text>
                                     <Text>
-                                        <Text style={{fontWeight:'bold'}}>Number of spots:</Text> {spots} / {spots}
+                                        <Text style={{fontWeight:'bold'}}>Number of spots:</Text> {spots}
                                     </Text>
                                 </View>
                             </Callout>
