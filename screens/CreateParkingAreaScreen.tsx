@@ -2,80 +2,91 @@ import { useState, useEffect, useCallback } from 'react';
 import { Text } from "../components/Themed";
 import { StyleSheet, SafeAreaView, ScrollView, View, Button, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import FormData from "../components/FormData";
-import FormTextField from "../components/FormTextField";
-import FormToggleField from "../components/FormToggleField";
+import FormData from "../components/form/FormData";
+import FormTextField from "../components/form/FormTextField";
+import FormToggleField from "../components/form/FormToggleField";
 import * as Location from 'expo-location';
 
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY } from '../variables';
-import axios from '../api/axios';
+import axios from 'axios';
+/** look at ../api/axios to change URL settings in the future */
 
 const CreateParkingAreaScreen = () => {
     const navigation = useNavigation();
 
     const [formValues, handleFormChange, setFormValues] = FormData({
-        name: '',
-        desc: '',
-        address: '',
-        spots: 0,
-        public: '',
-        hideFromMaps: false
+        name: '', desc: '',
+        address: '', spots: 0,
+        latitude: 0, longitude: 0,
+        public: '', hideFromMaps: false
     });
 
+    const [usingCurrentLocation, setUsingCurrentLocation] = useState(false);
     const fetchCurrentLocation = useCallback(
         async () => {
+            setUsingCurrentLocation(true);
             let loc = await Location.getCurrentPositionAsync({});
+            let { latitude, longitude } = loc.coords;
+            await setFormValues({
+                ...formValues,
+                latitude: latitude,
+                longitude: longitude
+            });
+
             let place = await Location.reverseGeocodeAsync(loc.coords);
             if (place[0] !== null) {
                 const { streetNumber, street, city, region, postalCode } = place[0];
                 const addrString = `${streetNumber} ${street}, ${city}, ${region} ${postalCode}`;
-                setFormValues({
+                await setFormValues({
                     ...formValues,
                     address: addrString
                 });
             }
             else {
                 Alert.alert("Cannot access current location. Try again.");
-                return;
             }
         }, []
     );
 
     function validateEntries() {
-        if (formValues.address.length <= 0) return false;
-        if (formValues.name.length <= 0) return false;
-        if (formValues.spots <= 0) return false;
-        if (formValues.public.length <= 0) return false;
-        if (formValues.hideFromMaps.length <= 0) return false;
-        return true;
+        const { address, name, spots } = formValues;
+        if (!usingCurrentLocation) return address.length > 0;
+        return (
+            name.length > 0 && 
+            spots > 0 && 
+            formValues.public.length > 0
+        );
     }
 
     const [isCorrectAddr, setHasCorrectAddr] = useState(false);
     useEffect(() => {
-        if (formValues.address.length > 0) {
-            const addressCheck = () => {
-                Geocoder.init(GOOGLE_APIKEY);
-                Geocoder.from(formValues.address)
-                    .then((res) => {
-                        setHasCorrectAddr(true);
-                    })
-                    .catch(err => console.error(err));
-                console.log(isCorrectAddr);
-                return isCorrectAddr;
-            };
-            setTimeout(() => {
-                if (!!!addressCheck) {
-                    Alert.alert("Address is not recognizable");
+        const addressCheck = () => {
+            Geocoder.init(GOOGLE_APIKEY);
+            Geocoder.from(formValues.address)
+                .then(({results}) => {
+                    const latLng = results[0].geometry.location;
+                    setHasCorrectAddr(true);
                     setFormValues({
                         ...formValues,
-                        address: ''
-                    });
-                    return;
-                }
-            }, 3000);
-        }
-    }, [formValues.address]);
+                        latitude: latLng.lat,
+                        longitude: latLng.lng
+                    })
+                })
+                .catch(err => console.error(err));
+            return isCorrectAddr;
+        };
+        setTimeout(() => {
+            const check = addressCheck();
+            if (!check) {
+                Alert.alert("Address is not recognizable");
+                setFormValues({
+                    ...formValues, address: ''
+                });
+                return;
+            }
+        }, 5000);
+    }, []);
 
     const [isError, setIsError] = useState(false),
         [message, setMessage] = useState('');
@@ -152,36 +163,40 @@ const CreateParkingAreaScreen = () => {
                         <Text style={{ fontWeight: 'bold' }}>Show on Google Maps:</Text> {String(formValues.hideFromMaps)}
                     </Text>
                 </View>
+
                 {/* confirm button */}
+
                 <View style={styles.confirm}>
                     <Button
                         title={'Create Area'}
                         color={'white'}
                         onPress={() => {
-                            const ve = validateEntries();
-                            if (!ve) {
+                            if (!validateEntries()) {
                                 Alert.alert("Not all fields are filled in or valid. Try again.");
                                 return;
                             };
 
-                            /* connect to backend */
                             const payload = {
                                 address: formValues.address,
+                                latitude: formValues.latitude,
+                                longitude: formValues.longitude,
                                 name: formValues.name,
                                 desc: formValues.desc,
                                 spots: formValues.spots,
                                 public: formValues.public,
                                 hideFromMaps: formValues.hideFromMaps
                             };
-                            /* change IP address each time if running on a local machine */
-                            axios.post("http://192.168.1.153:3000/parkingarea/", payload, {
-                                headers: { 'Content-Type': 'application/json' }
+                            /* fix this later :-( */
+                            fetch("http://10.217.213.182:3000/parkingarea/", {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
                             })
                             .then(async (res) => {
                                 try {
-                                    const data = await res.data;
-                                    setIsError((res.status !== 200) ? true : false);
-                                    setMessage(data.message);
+                                    res.json();
+                                    setIsError(res.status !== 200);
+                                    setMessage(res.statusText);
                                     Alert.alert("Created parking area!");
                                 } catch (err) {
                                     Alert.alert(`Parking area was not made. \nError: ${isError}\nMessage: ${message}`);

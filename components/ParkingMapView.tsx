@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, View, Dimensions, Button, Linking, Alert } from 'react-native';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
+import { StyleSheet, Text, View, Dimensions, Button, Linking, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY } from '../variables';
 import { useNavigation } from "@react-navigation/native";
+import axios from 'axios';
 
 interface MapLocation {
     latitude: number,
@@ -63,18 +64,47 @@ const ParkingMapView = () => {
         longitudeDelta: ZOOM
     }
 
-    const startLat = region.latitude,
-        startLng = region.longitude;
-    const markers: any = [
-        {
-            coors: {
-                lat: startLat,
-                lng: startLng
-            },
-            title: "Test marker",
-            desc: "For Google Maps API."
-        }
-    ];
+    const [markers, setMarkers] = useState([]);
+    const MARKER_OPACITY = 0.875, MARKER_HUE = '#49a429';
+    useEffect(() => {
+        axios.get("http://10.217.213.182:3000/parkingarea/")
+            .then(async (res) => {
+                const data = res.data;
+                const newMarkers = data.map((item: any, index: any) => {
+                    const { name, desc, hideFromMaps, address, latitude, longitude, spots } = item,
+                        aBreak = address.indexOf(",");
+                    return (
+                        <Marker
+                            key={index}
+                            coordinate={{
+                                latitude: latitude,
+                                longitude: longitude
+                            }} 
+                            title={name}
+                            description={desc}
+                            opacity={(hideFromMaps) ? 0.0 : MARKER_OPACITY}
+                            pinColor={MARKER_HUE}
+                        >
+                            <Callout>
+                                <View>
+                                    <Text>
+                                        <Text style={{fontWeight:'bold'}}>Address:</Text> {address.substring(0, aBreak) + '\n' + address.substring(aBreak)}
+                                    </Text>
+                                    <Text>
+                                        <Text style={{fontWeight:'bold'}}>Type of space:</Text> {item.public}
+                                    </Text>
+                                    <Text>
+                                        <Text style={{fontWeight:'bold'}}>Number of spots:</Text> {spots} / {spots}
+                                    </Text>
+                                </View>
+                            </Callout>
+                        </Marker>
+                    )
+                });
+                setMarkers(newMarkers);
+            })
+            .catch((err) => console.error(err));
+    }, []);
 
     const GOOGLE_MAPS_REDIRECT_URL = "https://maps.google.com";
     Geocoder.init(GOOGLE_APIKEY);
@@ -91,20 +121,7 @@ const ParkingMapView = () => {
                     customMapStyle={mapStyles}
                 >
                     {
-                        markers.map((item: any, index: any) => {
-                            const { coors, title, desc } = item;
-                            return (
-                                <Marker
-                                    key={index}
-                                    coordinate={{
-                                        latitude: coors.lat,
-                                        longitude: coors.lng,
-                                    }}
-                                    title={title}
-                                    description={desc} 
-                                />
-                            );
-                        })
+                        markers
                     }
                 </MapView>
             </View>
