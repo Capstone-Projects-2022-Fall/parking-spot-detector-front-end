@@ -7,7 +7,7 @@ import { RootTabScreenProps } from "../types";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Platform } from "react-native";
+import { Platform } from "react-native";
 import { Subscription } from "expo-modules-core";
 import { Parking } from "../redux/parking/index";
 import { currentParking } from "../redux/parking/parking";
@@ -72,7 +72,10 @@ export default function HomeScreen({
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
+        let parkingFromNotification: Parking = JSON.parse(
+          notification && JSON.stringify(notification.request.content.data)
+        );
+        dispatch(currentParking(parkingFromNotification));
       });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
@@ -85,7 +88,6 @@ export default function HomeScreen({
         );
         dispatch(currentParking(parkingFromNotification));
         console.log(response.notification.request.content.data);
-        setNotification(response.notification);
         navigation.navigate("TabThree");
       });
 
@@ -97,7 +99,7 @@ export default function HomeScreen({
       responseListener.current &&
         Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, [notification]);
+  }, [parking]);
 
   return (
     <View style={styles.container}>
@@ -109,21 +111,10 @@ export default function HomeScreen({
         {"\n"}Handicap status: {String(user.handicap)}
         {"\n"}LoginStatus: {user.status}
       </Text>
-      <Text>Your expo push token: {expoPushToken}</Text>
+
       <View style={{ alignItems: "center", justifyContent: "center" }}>
-        <Text>
-          Title: {notification && notification.request.content.title}{" "}
-        </Text>
-        <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>Data: {JSON.stringify(parking)}</Text>
+        <Text> Parking Data: {JSON.stringify(parking)}</Text>
       </View>
-      {/* The button to send notification using fetch requests in notification.ts */}
-      {/* <Button
-        title="Press to Send Notification"
-        onPress={async () => {
-          await sendPushNotification(expoPushToken);
-        }}
-      /> */}
       <View
         style={styles.separator}
         lightColor="#eee"
