@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Dimensions, Image, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
 import { formatPhoneNumber } from "../constants/Formatters";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
@@ -11,6 +11,7 @@ import { Button, Platform } from "react-native";
 import { Subscription } from "expo-modules-core";
 import { Parking } from "../redux/parking/index";
 import { currentParking } from "../redux/parking/parking";
+import { registerPushTokenThunk } from "../redux/user/userSlice";
 
 // ExponentPushToken[X7REOHMNL5IcMAkMS71A8v] on my device for testing
 
@@ -27,16 +28,22 @@ export default function HomeScreen({
 }: RootTabScreenProps<"TabOne">) {
   //****************image refresh ********************* */
 
-  const [imageURL, setImage] = useState("https://picsum.photos/200");
+  const imgUrlSample = "https://picsum.photos/200#";
+  const imgUrlSample2 =
+    "https://images.unsplash.com/photo-1664575195621-a5f347e67554#";
+
+  const serverFrameUrl =
+    "http://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com/frames?camera_id=324u0423904u20fe2#";
+
+  const [imageURL, setImage] = useState(imgUrlSample);
 
   useEffect(() => {
     let imgID = setInterval(() => {
-      setImage("https://picsum.photos/200?t=" + new Date().getTime());
+      setImage(imgUrlSample + new Date().getTime());
+      console.log("Frame Updated");
     }, 5000);
-    return () => {
-      clearInterval(imgID);
-    };
-  });
+    return () => clearInterval(imgID);
+  }, []);
 
   //************ User store****************** */
   const user = useAppSelector((state) => state.user);
@@ -54,6 +61,11 @@ export default function HomeScreen({
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
+
+      if (token !== undefined && token?.length > 1) {
+        dispatch(registerPushTokenThunk([String(user.id), token]));
+      }
+
       console.log(token);
     });
 
@@ -172,7 +184,7 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
-    width: 200,
+    width: Dimensions.get("window").width - 20,
     height: 300,
   },
 });

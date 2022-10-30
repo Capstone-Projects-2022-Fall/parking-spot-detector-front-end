@@ -134,6 +134,7 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   image: {
     width: "70%",
+    height: 200,
     resizeMode: "contain",
     alignSelf: "center",
   },
