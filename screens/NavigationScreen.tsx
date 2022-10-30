@@ -1,11 +1,12 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Platform, Linking } from "react-native";
 import { useEffect, useState } from "react";
 import { Text, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
+import { Button } from "native-base";
 import * as Location from "expo-location";
 import * as React from "react";
 
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useAppSelector } from "../hooks/hooks";
 
 // Use this for registration screen.
@@ -92,6 +93,25 @@ export default function SettingsScreen({
           title="Parking"
         />
       </MapView>
+      <Button
+        mt="2"
+        colorScheme="purple"
+        onPress={() => {
+          if (parking.parkingAval) {
+            Linking.openURL(
+              "https://www.google.com/maps/dir/?api=1&destination=" +
+                parking.coordinates[0] +
+                "," +
+                parking.coordinates[1] +
+                "&dir_action=navigate"
+            );
+          } else {
+            alert("No parking available");
+          }
+        }}
+      >
+        Navigate to Location
+      </Button>
       <Text>
         Latitude: {location?.coords.latitude} {"\n"} Longitude:
         {location?.coords.longitude}
@@ -108,6 +128,6 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get("window").width,
-    height: "80%",
+    height: "75%",
   },
 });

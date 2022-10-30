@@ -40,7 +40,6 @@ export default function HomeScreen({
 
   //************ User store****************** */
   const user = useAppSelector((state) => state.user);
-  console.log(JSON.stringify(user));
 
   /************* Notification ************* */
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
