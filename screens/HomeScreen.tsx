@@ -75,6 +75,7 @@ export default function HomeScreen({
         dispatch(currentParking(parkingFromNotification));
         console.log(response.notification.request.content.data);
         setNotification(response.notification);
+        navigation.navigate("TabThree");
       });
 
     return () => {

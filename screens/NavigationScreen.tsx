@@ -93,7 +93,7 @@ export default function SettingsScreen({
         />
       </MapView>
       <Text>
-        Latitude: {location?.coords.latitude} Longitude:{" "}
+        Latitude: {location?.coords.latitude} {"\n"} Longitude:
         {location?.coords.longitude}
       </Text>
     </View>
