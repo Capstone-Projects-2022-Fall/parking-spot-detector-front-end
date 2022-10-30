@@ -6,6 +6,7 @@ import * as Location from "expo-location";
 import * as React from "react";
 
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
+import { useAppSelector } from "../hooks/hooks";
 
 // Use this for registration screen.
 // export default function SettingsScreen({ navigation }: RootTabScreenProps<"TabTwo">) {
@@ -16,8 +17,12 @@ export default function SettingsScreen({
   const [location, setLocation] = useState<Location.LocationObject>();
   const [delta, setDelta] = useState([0.004, 0.007]);
 
+  // TODO use this to update marker on map and change lat and long delta to match distance between them.
+  const parking = useAppSelector((state) => state.parking);
+
   const mapRef = React.createRef<MapView>();
   const markerRef = React.createRef<Marker>();
+  const parkingMarkerRef = React.createRef<Marker>();
 
   const [mapRegion, setmapRegion] = useState({
     latitude: 39.9826281,
@@ -25,13 +30,6 @@ export default function SettingsScreen({
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-
-  const homeRegion = {
-    latitude: 39.98254635424615,
-    longitude: -75.16293123076989,
-    latitudeDelta: delta[0],
-    longitudeDelta: delta[1],
-  };
 
   useEffect(() => {
     (async () => {
@@ -51,8 +49,17 @@ export default function SettingsScreen({
       setmapRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: delta[0],
-        longitudeDelta: delta[1],
+
+        latitudeDelta: parking.parkingAval
+          ? (Math.max(parking.coordinates[0], location.coords.latitude) -
+              Math.min(parking.coordinates[0], location.coords.latitude)) *
+            Math.PI
+          : delta[0],
+        longitudeDelta: parking.parkingAval
+          ? (Math.max(parking.coordinates[1], location.coords.longitude) -
+              Math.min(parking.coordinates[1], location.coords.longitude)) *
+            Math.PI
+          : delta[1],
       });
 
       setLocation(location);
@@ -68,18 +75,21 @@ export default function SettingsScreen({
         style={styles.map}
         ref={mapRef}
       >
-        {/* <Polyline
-          coordinates={[mapRegion, homeRegion]}
-          strokeWidth={5}
-          strokeColor="#00a8ff"
-        /> */}
         <Marker
-          image={require("../assets/images/target.png")}
+          image={require("../assets/images/car.png")}
           coordinate={{
             latitude: Number(location?.coords.latitude),
             longitude: Number(location?.coords.longitude),
           }}
-          title="Marker"
+          title="Current Location"
+        />
+        <Marker
+          ref={parkingMarkerRef}
+          coordinate={{
+            latitude: parking.coordinates[0],
+            longitude: parking.coordinates[1],
+          }}
+          title="Parking"
         />
       </MapView>
       <Text>
