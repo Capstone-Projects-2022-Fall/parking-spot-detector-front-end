@@ -11,7 +11,7 @@ Scan the following QR code on your mobile device after the Expo Go app is instal
 
 Or, open this link on your Expo Go App:
 
-exp://exp.host/@projects-in-computer-science/ParkingSpotDetector?release-channel=default
+exp://exp.host/@projects-in-computer-science/ParkingSpotDetectorv1?release-channel=default
 
 ### Development Instructions
 
