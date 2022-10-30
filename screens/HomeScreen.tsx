@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Dimensions, Image, StyleSheet } from "react-native";
 import { Text, View } from "../components/Themed";
 import { formatPhoneNumber } from "../constants/Formatters";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
@@ -11,6 +11,7 @@ import { Button, Platform } from "react-native";
 import { Subscription } from "expo-modules-core";
 import { Parking } from "../redux/parking/index";
 import { currentParking } from "../redux/parking/parking";
+import { registerPushTokenThunk } from "../redux/user/userSlice";
 
 // ExponentPushToken[X7REOHMNL5IcMAkMS71A8v] on my device for testing
 
@@ -25,9 +26,29 @@ Notifications.setNotificationHandler({
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
-  const user = useAppSelector((state) => state.user);
-  console.log(JSON.stringify(user));
+  //****************image refresh ********************* */
 
+  const imgUrlSample = "https://picsum.photos/200#";
+  const imgUrlSample2 =
+    "https://images.unsplash.com/photo-1664575195621-a5f347e67554#";
+
+  const serverFrameUrl =
+    "http://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com/frames?camera_id=324u0423904u20fe2#";
+
+  const [imageURL, setImage] = useState(imgUrlSample);
+
+  useEffect(() => {
+    let imgID = setInterval(() => {
+      setImage(imgUrlSample + new Date().getTime());
+      console.log("Frame Updated");
+    }, 5000);
+    return () => clearInterval(imgID);
+  }, []);
+
+  //************ User store****************** */
+  const user = useAppSelector((state) => state.user);
+
+  /************* Notification ************* */
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
   const [notification, setNotification] =
     useState<Notifications.Notification>();
@@ -40,6 +61,11 @@ export default function HomeScreen({
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
+
+      if (token !== undefined && token?.length > 1) {
+        dispatch(registerPushTokenThunk([String(user.id), token]));
+      }
+
       console.log(token);
     });
 
@@ -60,6 +86,7 @@ export default function HomeScreen({
         dispatch(currentParking(parkingFromNotification));
         console.log(response.notification.request.content.data);
         setNotification(response.notification);
+        navigation.navigate("TabThree");
       });
 
     return () => {
@@ -102,10 +129,7 @@ export default function HomeScreen({
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Image
-        style={styles.image}
-        source={{ uri: "https://picsum.photos/200/300" }}
-      />
+      <Image style={styles.image} source={{ uri: imageURL, cache: "reload" }} />
     </View>
   );
 }
@@ -160,7 +184,7 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
-    width: 200,
+    width: Dimensions.get("window").width - 20,
     height: 300,
   },
 });
