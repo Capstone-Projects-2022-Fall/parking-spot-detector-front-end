@@ -1,5 +1,14 @@
 import { StyleSheet, Switch, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  Heading,
+  Input,
+  Link,
+  VStack,
+} from "native-base";
 
 import { Text, View } from "../components/Themed";
 import React from "react";
@@ -38,80 +47,62 @@ export default function ProfileScreen({
 
   const locationField = userAddress == "" ? "Search for address" : userAddress;
 
+  //***************************************************************
   return (
-    <View style={styles.container}>
-      <Center w="100%">
-        <Text style={styles.title}>Update Profile</Text>
-        <HStack alignItems="center" space={4}>
-          <Text>Handicap?</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isEnabled ? "#7059A3" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-          />
-        </HStack>
-        <TextInput
-          style={styles.input}
-          placeholder="First name"
-          value={userFirstName}
-          autoCapitalize="none"
-          placeholderTextColor="#003f5c"
-          onChangeText={(val) => setFirstName(val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Last name"
-          value={userLastName}
-          autoCapitalize="none"
-          placeholderTextColor="#003f5c"
-          onChangeText={(val) => setLastName(val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          textContentType="emailAddress"
-          value={userEmail}
-          autoCapitalize="none"
-          placeholderTextColor="#003f5c"
-          onChangeText={(val) => setUserEmail(val)}
-        />
+    <Center w="100%">
+    <Box safeArea p="2" py="1" w="90%" maxW="290">
+      <HStack style={{alignItems: "center", justifyContent: "space-evenly"}}>
+      <Text>Handicap?</Text>
+      <Switch
+             trackColor={{ false: "#767577", true: "#81b0ff" }}
+             thumbColor={isEnabled ? "#7059A3" : "#f4f3f4"}
+             ios_backgroundColor="#3e3e3e"
+             onValueChange={toggleSwitch}
+             value={isEnabled}
+           />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Phone number"
-          textContentType="telephoneNumber"
-          dataDetectorTypes="phoneNumber"
-          keyboardType="phone-pad"
-          maxLength={14}
-          value={formatPhoneNumber(userPhone)}
-          placeholderTextColor="#003f5c"
-          onChangeText={(val) => setUserPhone(formatPhoneNumber(val))}
-        />
+      </HStack>
+      
+      
+
+      <VStack>
+        <FormControl>
+          <FormControl.Label>First name</FormControl.Label>
+          <Input onChangeText={(val) => setFirstName(val)} />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Last name</FormControl.Label>
+          <Input onChangeText={(val) => setLastName(val)} />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Email</FormControl.Label>
+          <Input onChangeText={(val) => setUserEmail(val)} />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Phone Number</FormControl.Label>
+          <Input onChangeText={(val) => setUserPhone(val)} />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Address</FormControl.Label>
         <GooglePlacesAutocomplete
           styles={{
             container: {
-              marginTop: 10,
-              marginBottom: 5,
               flex: 0,
+              
             },
-            textInputContainer: {
-              width: "70%",
-              backgroundColor: "#C19FDE",
-              borderRadius: 30,
-            },
+
             textInput: {
-              borderRadius: 30,
-              backgroundColor: "#C19FDE",
+              //backgroundColor: "#3e3e3e",
+              borderWidth: 1,
+              borderColor: "gray",
               height: 36,
-              fontSize: 17,
-              fontWeight: "600",
+              fontSize: 12,
+              fontWeight: "400",
             },
           }}
           placeholder={locationField}
           textInputProps={{
-            placeholderTextColor: "#003f5c",
+            placeholderTextColor: "gray",
             returnKeyType: "search",
           }}
           query={{
@@ -124,133 +115,303 @@ export default function ProfileScreen({
           }}
           onFail={(error) => console.error(error)}
         />
-        <Text>*Leave passwords empty if not updating*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          autoCapitalize="none"
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          onChangeText={(val) => setUserPass1(val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          autoCapitalize="none"
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          onChangeText={(val) => setUserPass2(val)}
-        />
-        <View style={styles.button}>
-          <TouchableOpacity
-            style={styles.logoutBtn}
-            onPress={() => {
-              if (
-                userPass1 != "" &&
-                userPass2 != "" &&
-                userPass1 == userPass2 &&
-                userPass1.length < 8
-              ) {
-                alert(
-                  "Password must be 8 characters minimum or empty if not updating"
-                );
-              } else if (userPass1 != userPass2) {
-                alert("Passwords do not match");
-              } else if (userEmail.length < 1) {
-                alert("Invalid email address");
-              } else if (userFirstName.length < 1 || userLastName.length < 1) {
-                alert("Name field missing");
-              } else if (userAddress.length < 1) {
-                alert("Invalid address");
-              } else if (userPhone.length < 10) {
-                alert("Invalid phone number");
-              } else {
-                data.first_name = userFirstName;
-                data.last_name = userLastName;
-                data.address = userAddress;
-                data.phone_number = userPhone;
-                data.handicap = isEnabled;
-                data.email = userEmail;
-                data.password_hash = userPass1;
-                // Update in server, if password is supplied it will be hashed in the thunk.
-                dispatch(updateUserProfileThunk(data));
-              }
-            }}
-          >
-            <Text>Update</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.logoutBtn}
-            onPress={() => {
-              dispatch(logoutUser());
-              navigation.dispatch(StackActions.replace("SignIn"));
-            }}
-          >
-            <Text>Logout</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.deleteBtn}
-            onPress={() => {
-              // Delete user profile on server.
-              dispatch(deleteUserThunk(user));
-              // Logout to start with initial state.
-              dispatch(logoutUser());
-              // Return to sign in screen.
-              navigation.dispatch(StackActions.replace("SignIn"));
-            }}
-          >
-            <Text>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      </Center>
-    </View>
-  );
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Password</FormControl.Label>
+          <Input type="password" onChangeText={(val) => setUserPass1(val)} />
+          <FormControl.Label>Confirm Password</FormControl.Label>
+          <Input type="password" onChangeText={(val) => setUserPass2(val)} />
+
+        </FormControl>
+        <HStack style={{alignItems: "center", justifyContent: "space-evenly"}}>
+        
+        <Button
+          mt="2"
+          colorScheme="purple"
+          onPress={() => {
+            if (
+              userPass1 != "" &&
+              userPass2 != "" &&
+              userPass1 == userPass2 &&
+              userPass1.length < 8
+            ) {
+              alert(
+                "Password must be 8 characters minimum or empty if not updating"
+              );
+            } else if (userPass1 != userPass2) {
+              alert("Passwords do not match");
+            } else if (userEmail.length < 1) {
+              alert("Invalid email address");
+            } else if (userFirstName.length < 1 || userLastName.length < 1) {
+              alert("Name field missing");
+            } else if (userAddress.length < 1) {
+              alert("Invalid address");
+            } else if (userPhone.length < 10) {
+              alert("Invalid phone number");
+            } else {
+              data.first_name = userFirstName;
+              data.last_name = userLastName;
+              data.address = userAddress;
+              data.phone_number = userPhone;
+              data.handicap = isEnabled;
+              data.email = userEmail;
+              data.password_hash = userPass1;
+              // Update in server, if password is supplied it will be hashed in the thunk.
+              dispatch(updateUserProfileThunk(data));
+            }
+          }}
+        >
+          Update
+        </Button>
+
+        <Button
+          mt="2"
+          colorScheme="purple"
+          onPress={() => {
+            dispatch(logoutUser());
+            // Return to sign in screen.
+           navigation.dispatch(StackActions.replace("SignIn"));
+            }
+          }
+        >
+          Logout
+        </Button>
+
+        <Button
+          mt="2"
+          colorScheme="red"
+          onPress={() => {
+           // Delete user profile on server.
+           dispatch(deleteUserThunk(user));
+           // Logout to start with initial state.
+           dispatch(logoutUser());
+           // Return to sign in screen.
+           navigation.dispatch(StackActions.replace("SignIn"));
+            }
+          }
+        >
+          Delete
+        </Button>
+
+        </HStack>
+      </VStack>
+    </Box>
+  </Center>
+);
 }
+//     <View style={styles.container}>
+//       <Center w="100%">
+//         <Text style={styles.title}>Update Profile</Text>
+//         <HStack alignItems="center" space={4}>
+//           <Text>Handicap?</Text>
+//           <Switch
+//             trackColor={{ false: "#767577", true: "#81b0ff" }}
+//             thumbColor={isEnabled ? "#7059A3" : "#f4f3f4"}
+//             ios_backgroundColor="#3e3e3e"
+//             onValueChange={toggleSwitch}
+//             value={isEnabled}
+//           />
+          
+//         </HStack>
+//         <TextInput
+//           style={styles.input}
+//           placeholder="First name"
+//           value={userFirstName}
+//           autoCapitalize="none"
+//           placeholderTextColor="#003f5c"
+//           onChangeText={(val) => setFirstName(val)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Last name"
+//           value={userLastName}
+//           autoCapitalize="none"
+//           placeholderTextColor="#003f5c"
+//           onChangeText={(val) => setLastName(val)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Email"
+//           textContentType="emailAddress"
+//           value={userEmail}
+//           autoCapitalize="none"
+//           placeholderTextColor="#003f5c"
+//           onChangeText={(val) => setUserEmail(val)}
+//         />
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    marginBottom: 50,
-  },
-  button: {
-    flex: 1,
-    marginTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  input: {
-    width: "70%",
-    backgroundColor: "#C19FDE",
-    margin: 10,
-    padding: 8,
-    borderRadius: 30,
-    fontSize: 18,
-    fontWeight: "500",
-  },
-  deleteBtn: {
-    width: "30%",
-    borderRadius: 25,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 5,
-    backgroundColor: "red",
-  },
-  logoutBtn: {
-    width: "30%",
-    borderRadius: 25,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 5,
-    backgroundColor: "#7059A3",
-  },
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Phone number"
+//           textContentType="telephoneNumber"
+//           dataDetectorTypes="phoneNumber"
+//           keyboardType="phone-pad"
+//           maxLength={14}
+//           value={formatPhoneNumber(userPhone)}
+//           placeholderTextColor="#003f5c"
+//           onChangeText={(val) => setUserPhone(formatPhoneNumber(val))}
+//         />
+        // <GooglePlacesAutocomplete
+        //   styles={{
+        //     container: {
+        //       marginTop: 10,
+        //       marginBottom: 5,
+        //       flex: 0,
+        //     },
+        //     textInputContainer: {
+        //       width: "70%",
+        //       backgroundColor: "#C19FDE",
+        //       borderRadius: 30,
+        //     },
+        //     textInput: {
+        //       borderRadius: 30,
+        //       backgroundColor: "#C19FDE",
+        //       height: 36,
+        //       fontSize: 17,
+        //       fontWeight: "600",
+        //     },
+        //   }}
+        //   placeholder={locationField}
+        //   textInputProps={{
+        //     placeholderTextColor: "#003f5c",
+        //     returnKeyType: "search",
+        //   }}
+        //   query={{
+        //     key: API_KEY,
+        //     language: "en", // language of the results
+        //   }}
+        //   onPress={(data, details = null) => {
+        //     setUserAddress(data.description);
+        //     console.log(details);
+        //   }}
+        //   onFail={(error) => console.error(error)}
+        // />
+//         <Text>*Leave passwords empty if not updating*</Text>
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Password"
+//           autoCapitalize="none"
+//           placeholderTextColor="#003f5c"
+//           secureTextEntry={true}
+//           onChangeText={(val) => setUserPass1(val)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Confirm Password"
+//           autoCapitalize="none"
+//           placeholderTextColor="#003f5c"
+//           secureTextEntry={true}
+//           onChangeText={(val) => setUserPass2(val)}
+//         />
+//         <View style={styles.button}>
+//           <TouchableOpacity
+//             style={styles.logoutBtn}
+//             onPress={() => {
+              // if (
+              //   userPass1 != "" &&
+              //   userPass2 != "" &&
+              //   userPass1 == userPass2 &&
+              //   userPass1.length < 8
+              // ) {
+              //   alert(
+              //     "Password must be 8 characters minimum or empty if not updating"
+              //   );
+              // } else if (userPass1 != userPass2) {
+              //   alert("Passwords do not match");
+              // } else if (userEmail.length < 1) {
+              //   alert("Invalid email address");
+              // } else if (userFirstName.length < 1 || userLastName.length < 1) {
+              //   alert("Name field missing");
+              // } else if (userAddress.length < 1) {
+              //   alert("Invalid address");
+              // } else if (userPhone.length < 10) {
+              //   alert("Invalid phone number");
+              // } else {
+              //   data.first_name = userFirstName;
+              //   data.last_name = userLastName;
+              //   data.address = userAddress;
+              //   data.phone_number = userPhone;
+              //   data.handicap = isEnabled;
+              //   data.email = userEmail;
+              //   data.password_hash = userPass1;
+              //   // Update in server, if password is supplied it will be hashed in the thunk.
+              //   dispatch(updateUserProfileThunk(data));
+              // }
+//             }}
+//           >
+//             <Text>Update</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={styles.logoutBtn}
+//             onPress={() => {
+//               dispatch(logoutUser());
+//               navigation.dispatch(StackActions.replace("SignIn"));
+//             }}
+//           >
+//             <Text>Logout</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={styles.deleteBtn}
+//             onPress={() => {
+//               // Delete user profile on server.
+//               dispatch(deleteUserThunk(user));
+//               // Logout to start with initial state.
+//               dispatch(logoutUser());
+//               // Return to sign in screen.
+//               navigation.dispatch(StackActions.replace("SignIn"));
+//             }}
+//           >
+//             <Text>Delete</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </Center>
+//     </View>
+//   );
+// }
+//***************************************************************
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: "center",
+//     marginBottom: 50,
+//   },
+//   button: {
+//     flex: 1,
+//     marginTop: 10,
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//   },
+//   input: {
+//     width: "70%",
+//     backgroundColor: "#C19FDE",
+//     margin: 10,
+//     padding: 8,
+//     borderRadius: 30,
+//     fontSize: 18,
+//     fontWeight: "500",
+//   },
+//   deleteBtn: {
+//     width: "30%",
+//     borderRadius: 25,
+//     height: 50,
+//     alignItems: "center",
+//     justifyContent: "center",
+//     margin: 5,
+//     backgroundColor: "red",
+//   },
+//   logoutBtn: {
+//     width: "30%",
+//     borderRadius: 25,
+//     height: 50,
+//     alignItems: "center",
+//     justifyContent: "center",
+//     margin: 5,
+//     backgroundColor: "#7059A3",
+//   },
 
-  title: {
-    fontSize: 25,
+//   title: {
+//     fontSize: 25,
 
-    padding: 0,
-    textAlign: "center",
-  },
-});
+//     padding: 0,
+//     textAlign: "center",
+//   },
+// });
