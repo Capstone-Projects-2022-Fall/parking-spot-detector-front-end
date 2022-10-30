@@ -66,9 +66,8 @@ const ParkingMapView = () => {
 
     const [markers, setMarkers] = useState([]);
     const MARKER_OPACITY = 0.875, 
-        MARKER_HIDE_OPACITY = 0.5,
         MARKER_HIDE_HUE = '#ffad00',
-        MARKER_HUE = '#49a429';
+        MARKER_NORMAL_HUE = '#49a429';
     useEffect(() => {
         axios.get(`http://${LOCAL_IPV4}:3000/parkingarea/`)
             .then(async (res) => {
@@ -85,8 +84,8 @@ const ParkingMapView = () => {
                             }} 
                             title={name}
                             description={desc}
-                            opacity={(hideFromMaps) ? MARKER_HIDE_OPACITY : MARKER_OPACITY}
-                            pinColor={(hideFromMaps) ? MARKER_HIDE_HUE : MARKER_HUE}
+                            opacity={MARKER_OPACITY}
+                            pinColor={(hideFromMaps) ? MARKER_HIDE_HUE : MARKER_NORMAL_HUE}
                         >
                             <Callout>
                                 <View>
