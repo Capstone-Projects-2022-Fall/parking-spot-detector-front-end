@@ -25,9 +25,23 @@ Notifications.setNotificationHandler({
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
-  const user = useAppSelector((state) => state.user);
-  console.log(JSON.stringify(user));
+  //****************image refresh ********************* */
 
+  const [imageURL, setImage] = useState("https://picsum.photos/200");
+
+  useEffect(() => {
+    let imgID = setInterval(() => {
+      setImage("https://picsum.photos/200?t=" + new Date().getTime());
+    }, 5000);
+    return () => {
+      clearInterval(imgID);
+    };
+  });
+
+  //************ User store****************** */
+  const user = useAppSelector((state) => state.user);
+
+  /************* Notification ************* */
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
   const [notification, setNotification] =
     useState<Notifications.Notification>();
@@ -60,6 +74,7 @@ export default function HomeScreen({
         dispatch(currentParking(parkingFromNotification));
         console.log(response.notification.request.content.data);
         setNotification(response.notification);
+        navigation.navigate("TabThree");
       });
 
     return () => {
@@ -102,10 +117,7 @@ export default function HomeScreen({
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Image
-        style={styles.image}
-        source={{ uri: "https://picsum.photos/200/300" }}
-      />
+      <Image style={styles.image} source={{ uri: imageURL, cache: "reload" }} />
     </View>
   );
 }
