@@ -3,7 +3,7 @@ import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, Button } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
-import { GOOGLE_APIKEY, LOCAL_IPV4 } from '../variables';
+import { GOOGLE_APIKEY, WEBSITE } from '../variables';
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
 //import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -61,7 +61,7 @@ const ParkingMapView = () => {
         MARKER_NORMAL_HUE = '#49a429';
 
     useEffect(() => {
-        const performGetRequest = () => axios.get(`http://${LOCAL_IPV4}:3000/parkingarea/`)
+        const performGetRequest = () => axios.get(`http://${WEBSITE}/parkingarea/`)
             .then(async (res) => {
                 const data = res.data;
                 const newMarkers = data.map((item: any, index: any) => {

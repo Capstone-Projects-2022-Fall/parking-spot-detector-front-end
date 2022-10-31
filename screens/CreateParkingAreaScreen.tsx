@@ -8,7 +8,7 @@ import FormToggleField from "../components/form/FormToggleField";
 import * as Location from 'expo-location';
 
 import Geocoder from 'react-native-geocoding';
-import { GOOGLE_APIKEY, LOCAL_IPV4 } from '../variables';
+import { GOOGLE_APIKEY, WEBSITE } from '../variables';
 
 const CreateParkingAreaScreen = () => {
     const navigation = useNavigation();
@@ -197,7 +197,7 @@ const CreateParkingAreaScreen = () => {
                             };
                             //hideFromMaps: formValues.hideFromMaps
                             /* fix this later :-(*/
-                            fetch(`http://${LOCAL_IPV4}:3000/parkingarea/`, {
+                            fetch(`http://${WEBSITE}/parkingarea/`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(payload)

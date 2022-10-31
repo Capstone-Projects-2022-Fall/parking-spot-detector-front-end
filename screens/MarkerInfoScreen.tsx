@@ -1,7 +1,7 @@
 import { 
     Alert, Linking, SafeAreaView, ScrollView, View, Button, StyleSheet, Text 
 } from 'react-native';
-import { GOOGLE_MAPS_REDIRECT, LOCAL_IPV4} from '../variables';
+import { GOOGLE_MAPS_REDIRECT, WEBSITE } from '../variables';
 import { useCallback } from 'react';
 
 const MarkerInfoScreen = ({ route, navigation }: any) => {
@@ -45,7 +45,7 @@ const MarkerInfoScreen = ({ route, navigation }: any) => {
     // for deleting parking area
     /*const deleteArea = () => {
         let delData = String(parkingData._id);
-        fetch(`http://${LOCAL_IPV4}:3000/parkingarea/${delData}`)
+        fetch(`http://${WEBSITE}/parkingarea/${delData}`)
             .then((res) => {
                 Alert.alert("Parking area has been deleted! Refresh to see changes.");
                 console.log(res.json());
