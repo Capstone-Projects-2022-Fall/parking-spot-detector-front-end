@@ -3,10 +3,9 @@ import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, Button } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
-import { GOOGLE_APIKEY, GOOGLE_MAPS_REDIRECT, LOCAL_IPV4 } from '../variables';
+import { GOOGLE_APIKEY, LOCAL_IPV4 } from '../variables';
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
-import { RootStackParamList, RootStackScreenProps } from '../types';
 //import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 //import { RootStackParamList } from '../types';
 
@@ -22,7 +21,6 @@ const Separator = () => {
 };
 
 const ParkingMapView = () => {
-    //const navigation: RootStackScreenProps<'ParkingMapView'> = useNavigation();
     const navigation = useNavigation();
 
     const ZOOM = 0.0625;
@@ -53,12 +51,17 @@ const ParkingMapView = () => {
         public: '', hideFromMaps: false
     });
 
+    // last state, for refreshing Maps after adding marker
+    const RAND = Math.floor(Math.random() * 100);
+    const [randomKey, setRandomKey] = useState(RAND);
+
     const [markers, setMarkers] = useState([]);
     const MARKER_OPACITY = 0.875,
         MARKER_HIDE_HUE = '#ffad00',
         MARKER_NORMAL_HUE = '#49a429';
+
     useEffect(() => {
-        axios.get(`http://${LOCAL_IPV4}:3000/parkingarea/`)
+        const performGetRequest = () => axios.get(`http://${LOCAL_IPV4}:3000/parkingarea/`)
             .then(async (res) => {
                 const data = res.data;
                 const newMarkers = data.map((item: any, index: any) => {
@@ -103,8 +106,10 @@ const ParkingMapView = () => {
                     )
                 });
                 setMarkers(newMarkers);
+                setRandomKey(Math.floor(Math.random() * 100));
             })
             .catch((err) => console.error(err));
+        performGetRequest();
     }, []);
 
     Geocoder.init(GOOGLE_APIKEY);
@@ -113,6 +118,7 @@ const ParkingMapView = () => {
         <>
             <View style={styles.container}>
                 <MapView
+                    key={randomKey}
                     style={styles.map}
                     provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}

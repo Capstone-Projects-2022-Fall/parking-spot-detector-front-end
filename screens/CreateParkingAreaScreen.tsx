@@ -9,7 +9,6 @@ import * as Location from 'expo-location';
 
 import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY, LOCAL_IPV4 } from '../variables';
-/** look at ../api/axios to change URL settings in the future */
 
 const CreateParkingAreaScreen = () => {
     const navigation = useNavigation();
@@ -18,7 +17,7 @@ const CreateParkingAreaScreen = () => {
         name: '', desc: '',
         address: '', spots: 0,
         latitude: 0, longitude: 0,
-        public: '', hideFromMaps: false
+        public: '', hideFromMaps: true
     });
 
     const [usingCurrentLocation, setUsingCurrentLocation] = useState(false);
@@ -49,9 +48,7 @@ const CreateParkingAreaScreen = () => {
     );
 
     function validateEntries() {
-        // i got lazy here
-        const parkingTypes = ['Public', 'Private', 'Paid', 'public', 'private', 'paid', 'PUBLIC', 'PRIVATE', 'PAID'];
-        
+        const parkingTypes = ['Public', 'Private', 'Paid', 'public', 'private', 'paid', 'PUBLIC', 'PRIVATE', 'PAID'];        
         const { address, name, spots } = formValues;
         if (!parkingTypes.includes(formValues.public)) return false;
         if (!usingCurrentLocation) return address.length > 0;
@@ -157,7 +154,7 @@ const CreateParkingAreaScreen = () => {
                         handler={handleFormChange}
                     />
                     <FormToggleField
-                        label={'Hide from Google Maps'}
+                        label={'Show on Google Maps'}
                         formKey="hideFromMaps"
                         handler={handleFormChange}
                     />
@@ -198,6 +195,7 @@ const CreateParkingAreaScreen = () => {
                                 public: formValues.public,
                                 hideFromMaps: formValues.hideFromMaps
                             };
+                            //hideFromMaps: formValues.hideFromMaps
                             /* fix this later :-(*/
                             fetch(`http://${LOCAL_IPV4}:3000/parkingarea/`, {
                                 method: 'POST',
@@ -221,7 +219,7 @@ const CreateParkingAreaScreen = () => {
                                 console.error(err);
                             });
                             setHasCorrectAddr(false);
-                            navigation.navigate("Root");
+                            navigation.goBack();
                         }}
                     />
                 </View>
