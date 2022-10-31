@@ -6,15 +6,9 @@ import Geocoder from 'react-native-geocoding';
 import { GOOGLE_APIKEY, GOOGLE_MAPS_REDIRECT, LOCAL_IPV4 } from '../variables';
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from '../types';
-
-type MarkerInfoScreenNavigationProp = NativeStackNavigationProp<
-    RootStackParamList, 'MarkerInfo'
->;
-type Props = {
-    navigation: MarkerInfoScreenNavigationProp;
-};
+import { RootStackParamList, RootStackScreenProps } from '../types';
+//import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+//import { RootStackParamList } from '../types';
 
 interface MapLocation {
     latitude: number,
@@ -28,6 +22,7 @@ const Separator = () => {
 };
 
 const ParkingMapView = () => {
+    //const navigation: RootStackScreenProps<'ParkingMapView'> = useNavigation();
     const navigation = useNavigation();
 
     const ZOOM = 0.0625;
@@ -148,7 +143,7 @@ const ParkingMapView = () => {
                                     color="white"
                                     onPress={() => {
                                         console.log(selectedMarkerProps);
-                                        navigation.navigate("MarkerInfo", { anyObject: selectedMarkerProps });
+                                        navigation.navigate("MarkerInfo", { parkingData: selectedMarkerProps });
                                     }}
                                 />
                             </View>

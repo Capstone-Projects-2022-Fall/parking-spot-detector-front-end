@@ -31,6 +31,7 @@ import {
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import CreateParkingAreaScreen from "../screens/CreateParkingAreaScreen";
+import ParkingMapView from "../components/ParkingMapView";
 
 export default function Navigation({
   colorScheme,
@@ -77,8 +78,13 @@ function RootNavigator() {
         options={{ title: "Oops!" }}
       />
       <Stack.Screen 
+        name="ParkingMapView"
+        component={ParkingMapView}
+      />
+      <Stack.Screen 
         name="MarkerInfo"
         component={MarkerInfoScreen}
+        initialParams={{ parkingData: {} }}
         options={{ title: "Marker Information" }}
       />
       <Stack.Group screenOptions={{ presentation: "modal" }}>

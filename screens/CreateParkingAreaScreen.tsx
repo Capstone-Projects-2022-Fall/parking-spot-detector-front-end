@@ -209,7 +209,7 @@ const CreateParkingAreaScreen = () => {
                                     res.json();
                                     setIsError(res.status !== 200);
                                     setMessage(res.statusText);
-                                    Alert.alert("Created parking area!");
+                                    Alert.alert("Created parking area!\nRefresh app to see parking info.");
                                     console.log(payload);
                                 } catch (err) {
                                     Alert.alert(`Parking area was not made. \nError: ${isError}\nMessage: ${message}`);
