@@ -68,7 +68,8 @@ export default function SignInScreen() {
           fontWeight="medium"
           size="xs"
         >
-          Sign in to continue!
+          Sign in to continue! {"\n"}
+          test@email.com and password
         </Heading>
 
         <VStack space={3} mt="5">
