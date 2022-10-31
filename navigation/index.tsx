@@ -22,6 +22,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import SignInScreen from "../screens/login/SignInScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import RegisterScreen from "../screens/login/Register";
+import MarkerInfoScreen from "../screens/MarkerInfoScreen";
 
 import {
   RootStackParamList,
@@ -74,6 +75,11 @@ function RootNavigator() {
         name="NotFound"
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
+      />
+      <Stack.Screen 
+        name="MarkerInfo"
+        component={MarkerInfoScreen}
+        options={{ title: "Marker Information" }}
       />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />

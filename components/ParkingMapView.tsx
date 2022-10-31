@@ -1,11 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions, Button, Linking, Alert } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Button } from 'react-native';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
-import { GOOGLE_APIKEY, LOCAL_IPV4 } from '../variables';
+import { GOOGLE_APIKEY, GOOGLE_MAPS_REDIRECT, LOCAL_IPV4 } from '../variables';
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from '../types';
+
+type MarkerInfoScreenNavigationProp = NativeStackNavigationProp<
+    RootStackParamList, 'MarkerInfo'
+>;
+type Props = {
+    navigation: MarkerInfoScreenNavigationProp;
+};
 
 interface MapLocation {
     latitude: number,
@@ -18,31 +27,9 @@ const Separator = () => {
     return <View style={styles.sep} />;
 };
 
-const RedirectButton = (props: { link: string; }) => {
-    const { link } = props;
-    const handleRedirect = useCallback(
-        async () => {
-            const supported = await Linking.canOpenURL(link);
-            if (!!!supported) {
-                Alert.alert(`Link ${link} invalid. Try again.`);
-                return;
-            }
-            await Linking.openURL(link);
-        }, [link]
-    )
-    return (
-        <View style={styles.redirect}>
-            <Button
-                color={'white'}
-                title={'Go to Google Maps'}
-                onPress={handleRedirect}
-            />
-        </View>
-    );
-};
-
 const ParkingMapView = () => {
     const navigation = useNavigation();
+
     const ZOOM = 0.0625;
     const [currLocation, setCurrLocation] = useState<Location.LocationObject | null>(null);
 
@@ -125,7 +112,6 @@ const ParkingMapView = () => {
             .catch((err) => console.error(err));
     }, []);
 
-    const GOOGLE_MAPS_REDIRECT_URL = "https://maps.google.com";
     Geocoder.init(GOOGLE_APIKEY);
 
     return (
@@ -161,7 +147,8 @@ const ParkingMapView = () => {
                                     title='Show More Info'
                                     color="white"
                                     onPress={() => {
-                                        console.log(selectedMarkerProps)
+                                        console.log(selectedMarkerProps);
+                                        navigation.navigate("MarkerInfo", { anyObject: selectedMarkerProps });
                                     }}
                                 />
                             </View>
@@ -179,10 +166,6 @@ const ParkingMapView = () => {
                     }}
                 />
             </View>
-            <Separator />
-            <RedirectButton
-                link={GOOGLE_MAPS_REDIRECT_URL}
-            />
         </>
     );
 }

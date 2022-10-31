@@ -8,8 +8,6 @@ import Navigation from "./navigation";
 import store from "./redux/store";
 import * as Location from "expo-location";
 import { useState, useEffect } from "react";
-import { BackHandler } from "react-native";
-import { enableLocation } from "./hooks/enableLocation";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

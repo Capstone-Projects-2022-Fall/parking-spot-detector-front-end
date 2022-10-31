@@ -23,6 +23,7 @@ export type RootStackParamList = {
   Modal: undefined;
   NotFound: undefined;
   CreateParkingAreaScreen: undefined;
+  MarkerInfo: { anyObject: {} }; 
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
