@@ -58,7 +58,7 @@ export default function HomeScreen({
       Notifications.addNotificationResponseReceivedListener((response: any) => {
         let parkingFromNotification: Parking = JSON.parse(
           response.notification &&
-            JSON.stringify(response.notification.request.content.data)
+          JSON.stringify(response.notification.request.content.data)
         );
         dispatch(currentParking(parkingFromNotification));
         console.log(response.notification.request.content.data);
@@ -77,12 +77,12 @@ export default function HomeScreen({
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         bounces={false}
         style={styles.scroll}
       >
         <View style={styles.home}>
-          <Image 
+          <Image
             style={styles.logo}
             source={require("../assets/images/parking_spot_logo.png")}
           />
@@ -94,10 +94,29 @@ export default function HomeScreen({
             {"\n"}Handicap status: {String(user.handicap)}
             {"\n"}LoginStatus: {user.status}
           </Text>
+          <Text>Your expo push token: {expoPushToken}</Text>
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Text>
+              Title: {notification && notification.request.content.title}{" "}
+            </Text>
+            <Text>Body: {notification && notification.request.content.body}</Text>
+            <Text>Data: {JSON.stringify(parking)}</Text>
+          </View>
+          {/* The button to send notification using fetch requests in notification.ts */}
+          {/* <Button
+        title="Press to Send Notification"
+        onPress={async () => {
+          await sendPushNotification(expoPushToken);
+        }}
+      /> */}
           <View
             style={styles.separator}
             lightColor="#eee"
             darkColor="rgba(255,255,255,0.1)"
+          />
+          <Image
+            style={styles.image}
+            source={{ uri: "https://picsum.photos/200/300" }}
           />
           <Text>Open profile tab to update your information {'\n'}</Text>
         </View>
@@ -160,7 +179,7 @@ const styles = StyleSheet.create({
     padding: '10%'
   },
   logo: {
-    width: "60%", 
+    width: "60%",
     resizeMode: "contain",
     backgroundColor: 'white',
     borderRadius: 15,
