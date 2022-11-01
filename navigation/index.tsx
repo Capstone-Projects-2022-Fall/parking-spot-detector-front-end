@@ -18,7 +18,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import HomeScreen from "../screens/HomeScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import NavigationScreen from "../screens/NavigationScreen";
 import SignInScreen from "../screens/login/SignInScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import RegisterScreen from "../screens/login/Register";
@@ -151,10 +151,10 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="TabThree"
-        component={SettingsScreen}
+        component={NavigationScreen}
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color }) => <TabBarIcon name="cogs" color={color} />,
+          title: "Navigation",
+          tabBarIcon: ({ color }) => <TabBarIcon name="map" color={color} />,
         }}
       />
     </BottomTab.Navigator>

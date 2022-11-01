@@ -99,6 +99,47 @@ export const registerUserThunk = createAsyncThunk(
 );
 
 /**
+ * Thunk function for posting new pushToken after login using axios
+ * @param user The user object to be posted as a registered user
+ * @return The result of the post user data
+ */
+export const registerPushTokenThunk = createAsyncThunk(
+  // action type string
+  "user/registerPushToken",
+  // callback function
+  async (idAndToken: string[]) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      };
+
+      const response = await axios.put<User>(
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/usersToken?id=" +
+          idAndToken[0],
+        idAndToken,
+        config
+      );
+      let data = response.data;
+      if (JSON.stringify(data) == '{"status":"ok"}') {
+        console.log(response.status);
+        return data;
+      } else {
+        throw alert("Could not register for push notifications");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log("error message: ", error.message);
+        throw console.warn("Network error");
+      }
+      throw error;
+    }
+  }
+);
+
+/**
  * Thunk function for updating user profile data
  * @param user The user profile object to be updated
  * @return The success message of the put request
@@ -276,7 +317,11 @@ export const userSlice = createSlice({
       // // Update with extra cases if needed later.
       .addCase(deleteUserThunk.pending, (state) => {})
       .addCase(deleteUserThunk.fulfilled, (state, action) => {})
-      .addCase(deleteUserThunk.rejected, (state) => {});
+      .addCase(deleteUserThunk.rejected, (state) => {})
+      // Register token cases
+      .addCase(registerPushTokenThunk.fulfilled, (state, action) => {
+        state.pushToken = action.meta.arg[1];
+      });
   },
 });
 

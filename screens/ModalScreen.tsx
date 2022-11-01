@@ -3,15 +3,17 @@ import { Platform, StyleSheet } from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
+import { useAppSelector } from "../hooks/hooks";
 
 /**
  * The ModalScreen view accessed through the info icon on the home screen.
  * @returns {JSX.Element}
  */
 export default function ModalScreen() {
+  const user = useAppSelector((state) => state.user);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>This will be the help/info screen</Text>
+      <Text style={styles.title}>{user.pushToken}</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
