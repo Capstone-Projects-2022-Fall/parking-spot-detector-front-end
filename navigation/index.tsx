@@ -22,6 +22,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import SignInScreen from "../screens/login/SignInScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import RegisterScreen from "../screens/login/Register";
+import MarkerInfoScreen from "../screens/MarkerInfoScreen";
 
 import {
   RootStackParamList,
@@ -29,6 +30,8 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
+import CreateParkingAreaScreen from "../screens/CreateParkingAreaScreen";
+import ParkingMapView from "../components/ParkingMapView";
 
 export default function Navigation({
   colorScheme,
@@ -74,9 +77,26 @@ function RootNavigator() {
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
       />
+      <Stack.Screen 
+        name="ParkingMapView"
+        component={ParkingMapView}
+      />
+      <Stack.Screen 
+        name="MarkerInfo"
+        component={MarkerInfoScreen}
+        initialParams={{ parkingData: {} }}
+        options={{ title: "Marker Information" }}
+      />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
+
+      {/* UPDATE: add screen for creating parking area*/}
+      <Stack.Screen
+        name="CreateParkingAreaScreen"
+        component={CreateParkingAreaScreen} 
+        options={{ title: "Create Parking Area" }}
+      />
     </Stack.Navigator>
   );
 }

@@ -2936,7 +2936,7 @@
 
 "@types/geojson@^7946.0.7":
   version "7946.0.10"
-  resolved "https://registry.npmjs.org/@types/geojson/-/geojson-7946.0.10.tgz"
+  resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.10.tgz#6dfbf5ea17142f7f9a043809f1cd4c448cb68249"
   integrity sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==
 
 "@types/graceful-fs@^4.1.2":
@@ -4386,7 +4386,7 @@ depd@~1.1.2:
 
 deprecated-react-native-prop-types@^2.3.0:
   version "2.3.0"
-  resolved "https://registry.npmjs.org/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz#c10c6ee75ff2b6de94bb127f142b814e6e08d9ab"
   integrity sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA==
   dependencies:
     "@react-native/normalize-color" "*"
@@ -4739,7 +4739,7 @@ expo-crypto@~11.0.0:
   resolved "https://registry.npmjs.org/expo-crypto/-/expo-crypto-11.0.0.tgz"
   integrity sha512-EH1Ikcy/HxfLJpo+zVRic4Igl6AovZEksAheKfeM2u+2TfL3FEBiQo+cGkuIa8NQ9ui3xYqQcyMk+IIZ6AO0Xg==
 
-expo-device@~4.3.0:
+expo-device@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/expo-device/-/expo-device-4.3.0.tgz#a25257febe8dd18378f556ef61b5ff73ee687a6b"
   integrity sha512-NRmsEuZVxx0EvD/dHZdng87wDgN9msfyjqp5DbNIyzvMGhxOrGtE/iEivvMyOdQpVotHGK8rBRbFKJzOtYB5lg==
@@ -4825,7 +4825,7 @@ expo-modules-core@0.11.8:
     compare-versions "^3.4.0"
     invariant "^2.2.4"
 
-expo-notifications@~0.16.1:
+expo-notifications@^0.16.1:
   version "0.16.1"
   resolved "https://registry.yarnpkg.com/expo-notifications/-/expo-notifications-0.16.1.tgz#4e6c74fb6b3aa615a36f587e0fd4876ca48ecf91"
   integrity sha512-GYXZnR5VCU79tM/2senPJ0jWq04PFAvh3chFYaz9qvUjJwl/AV/BQz0xOUNXGXmm8nBf6FA8B4exDV8h4KhV6g==
@@ -8301,6 +8301,11 @@ react-native-codegen@^0.69.2:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-geocoding@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-geocoding/-/react-native-geocoding-0.5.0.tgz#69748f896047a63d1c3c1d55255f9d67c8e275c2"
+  integrity sha512-peTXRpRxPLiZpbTW43AOvoXXAEoS+eLnSo4KRY0hcL9F2hulWE5r7o5KiaLx8AWj35c6EJP3fdGHe754q2Gd2Q==
+
 react-native-google-places-autocomplete@^2.4.1:
   version "2.4.1"
   resolved "https://registry.npmjs.org/react-native-google-places-autocomplete/-/react-native-google-places-autocomplete-2.4.1.tgz"
@@ -8330,7 +8335,7 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
 
 react-native-maps@0.31.1:
   version "0.31.1"
-  resolved "https://registry.npmjs.org/react-native-maps/-/react-native-maps-0.31.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.31.1.tgz#574be035a52287e3ab1c1da35e2ce3e2116f0fd6"
   integrity sha512-vipeOPykqLRMCLcLUCZEB+cTdNSlq88NLb0jChY4UGTY5fgOS7GYWkfswy6bW1ayTRLxJS3zpMGFDUY59/ZrXA==
   dependencies:
     "@types/geojson" "^7946.0.7"
