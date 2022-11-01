@@ -1,19 +1,26 @@
-import { Image, StyleSheet, SafeAreaView, ScrollView, Dimensions } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { Text, View } from "../components/Themed";
 import { formatPhoneNumber } from "../constants/Formatters";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { RootTabScreenProps } from "../types";
-import ParkingMapView from '../components/ParkingMapView';
+import ParkingMapView from "../components/ParkingMapView";
 
 /* IF YOU'RE READING THIS, THIS IS WHAT YOU SEE FROM MAPVIEW */
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Platform } from "react-native";
+import { Platform } from "react-native";
 import { Subscription } from "expo-modules-core";
 import { Parking } from "../redux/parking/index";
 import { currentParking } from "../redux/parking/parking";
+import { registerPushTokenThunk } from "../redux/user/userSlice";
 
 // ExponentPushToken[X7REOHMNL5IcMAkMS71A8v] on my device for testing
 
@@ -28,12 +35,22 @@ Notifications.setNotificationHandler({
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
-  const user = useAppSelector((state) => state.user);
-  console.log(JSON.stringify(user));
+  //****************image refresh ********************* */
 
+  const imgUrlSample = "https://picsum.photos/200#";
+  const imgUrlSample2 =
+    "https://images.unsplash.com/photo-1545179605-1296651e9d43?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&q=20#";
+
+  const serverFrameUrl =
+    "https://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com/cameras/635f5bebad2e8de576523e78/latest";
+
+  const [imageURL, setImage] = useState(serverFrameUrl);
+
+  //************ User store****************** */
+  const user = useAppSelector((state) => state.user);
+
+  /************* Notification ************* */
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
-  const [notification, setNotification] =
-    useState<Notifications.Notification>();
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 
@@ -43,13 +60,21 @@ export default function HomeScreen({
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
+
+      if (token !== undefined && token?.length > 1) {
+        dispatch(registerPushTokenThunk([String(user.id), token]));
+      }
+
       console.log(token);
     });
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification: any) => {
-        setNotification(notification);
+      Notifications.addNotificationReceivedListener((notification) => {
+        let parkingFromNotification: Parking = JSON.parse(
+          notification && JSON.stringify(notification.request.content.data)
+        );
+        dispatch(currentParking(parkingFromNotification));
       });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
@@ -58,11 +83,11 @@ export default function HomeScreen({
       Notifications.addNotificationResponseReceivedListener((response: any) => {
         let parkingFromNotification: Parking = JSON.parse(
           response.notification &&
-          JSON.stringify(response.notification.request.content.data)
+            JSON.stringify(response.notification.request.content.data)
         );
         dispatch(currentParking(parkingFromNotification));
         console.log(response.notification.request.content.data);
-        setNotification(response.notification);
+        navigation.navigate("TabThree");
       });
 
     return () => {
@@ -73,14 +98,11 @@ export default function HomeScreen({
       responseListener.current &&
         Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, [notification]);
+  }, [parking]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        bounces={false}
-        style={styles.scroll}
-      >
+      <ScrollView bounces={false} style={styles.scroll}>
         <View style={styles.home}>
           <Image
             style={styles.logo}
@@ -99,7 +121,9 @@ export default function HomeScreen({
             <Text>
               Title: {notification && notification.request.content.title}{" "}
             </Text>
-            <Text>Body: {notification && notification.request.content.body}</Text>
+            <Text>
+              Body: {notification && notification.request.content.body}
+            </Text>
             <Text>Data: {JSON.stringify(parking)}</Text>
           </View>
           {/* The button to send notification using fetch requests in notification.ts */}
@@ -118,7 +142,7 @@ export default function HomeScreen({
             style={styles.image}
             source={{ uri: "https://picsum.photos/200/300" }}
           />
-          <Text>Open profile tab to update your information {'\n'}</Text>
+          <Text>Open profile tab to update your information {"\n"}</Text>
         </View>
 
         {/* <EditScreenInfo path="/screens/HomeScreen.tsx" /> */}
@@ -170,22 +194,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    width: Dimensions.get('window').width * 1.05
+    width: Dimensions.get("window").width * 1.05,
   },
   scroll: {
-    backgroundColor: 'purple'
+    backgroundColor: "purple",
   },
   home: {
-    padding: '10%'
+    padding: "10%",
   },
   logo: {
     width: "60%",
     resizeMode: "contain",
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     height: 30,
-    padding: '12% 0%',
-    margin: '20% 0%',
+    padding: "12% 0%",
+    margin: "20% 0%",
   },
   title: {
     fontSize: 20,
@@ -197,11 +221,11 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   mapContainer: {
-    padding: '2.5%'
+    padding: "2.5%",
   },
   image: {
     resizeMode: "contain",
-    width: 200,
+    width: Dimensions.get("window").width - 20,
     height: 300,
   },
 });
