@@ -16,6 +16,7 @@ export interface User {
   password_hash: string;
   handicap: boolean;
   address: string;
+  pushToken: string;
   regStatus:
     | LoginStatus.IDLE
     | LoginStatus.LOADING
@@ -37,6 +38,7 @@ export const initialState: User = {
   password_hash: "",
   handicap: false,
   address: "",
+  pushToken: "",
   status: LoginStatus.IDLE,
   regStatus: LoginStatus.IDLE,
 };

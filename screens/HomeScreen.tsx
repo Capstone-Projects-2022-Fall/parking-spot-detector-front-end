@@ -30,28 +30,18 @@ export default function HomeScreen({
 
   const imgUrlSample = "https://picsum.photos/200#";
   const imgUrlSample2 =
-    "https://images.unsplash.com/photo-1664575195621-a5f347e67554#";
+    "https://images.unsplash.com/photo-1545179605-1296651e9d43?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&q=20#";
 
   const serverFrameUrl =
-    "http://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com/frames?camera_id=324u0423904u20fe2#";
+    "https://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com/cameras/635f5bebad2e8de576523e78/latest";
 
-  const [imageURL, setImage] = useState(imgUrlSample);
-
-  useEffect(() => {
-    let imgID = setInterval(() => {
-      setImage(imgUrlSample + new Date().getTime());
-      console.log("Frame Updated");
-    }, 5000);
-    return () => clearInterval(imgID);
-  }, []);
+  const [imageURL, setImage] = useState(serverFrameUrl);
 
   //************ User store****************** */
   const user = useAppSelector((state) => state.user);
 
   /************* Notification ************* */
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
-  const [notification, setNotification] =
-    useState<Notifications.Notification>();
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 

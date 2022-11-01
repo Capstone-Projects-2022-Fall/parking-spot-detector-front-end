@@ -317,8 +317,11 @@ export const userSlice = createSlice({
       // // Update with extra cases if needed later.
       .addCase(deleteUserThunk.pending, (state) => {})
       .addCase(deleteUserThunk.fulfilled, (state, action) => {})
-      .addCase(deleteUserThunk.rejected, (state) => {});
-    // Register token cases
+      .addCase(deleteUserThunk.rejected, (state) => {})
+      // Register token cases
+      .addCase(registerPushTokenThunk.fulfilled, (state, action) => {
+        state.pushToken = action.meta.arg[1];
+      });
   },
 });
 
