@@ -79,8 +79,16 @@ export default function SettingsScreen({
         <Marker
           image={require("../assets/images/car.png")}
           coordinate={{
-            latitude: Number(location?.coords.latitude),
-            longitude: Number(location?.coords.longitude),
+            latitude: Number(
+              isNaN(Number(location?.coords.latitude))
+                ? 0.0
+                : location?.coords.latitude
+            ),
+            longitude: Number(
+              isNaN(Number(location?.coords.longitude))
+                ? 0.0
+                : location?.coords.longitude
+            ),
           }}
           title="Current Location"
         />
