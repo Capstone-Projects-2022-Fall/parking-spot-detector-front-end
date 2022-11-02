@@ -1,5 +1,4 @@
 // Phone number format function.
-export const API_KEY = "AIzaSyDPwEk4xgQiQE1TxB1wSq-bVNpbPes0dyc";
 
 export function formatPhoneNumber(text: string) {
   var cleaned = ("" + text).replace(/\D/g, "");

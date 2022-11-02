@@ -1,8 +1,17 @@
-import { Dimensions, Image, StyleSheet } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { Text, View } from "../components/Themed";
 import { formatPhoneNumber } from "../constants/Formatters";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { RootTabScreenProps } from "../types";
+import ParkingMapView from "../components/ParkingMapView";
+
+/* IF YOU'RE READING THIS, THIS IS WHAT YOU SEE FROM MAPVIEW */
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -26,22 +35,10 @@ Notifications.setNotificationHandler({
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
-  //****************image refresh ********************* */
-
-  const imgUrlSample = "https://picsum.photos/200#";
-  const imgUrlSample2 =
-    "https://images.unsplash.com/photo-1545179605-1296651e9d43?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&q=20#";
-
-  const serverFrameUrl =
-    "https://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com/cameras/635f5bebad2e8de576523e78/latest";
-
-  const [imageURL, setImage] = useState(serverFrameUrl);
-
   //************ User store****************** */
   const user = useAppSelector((state) => state.user);
 
   /************* Notification ************* */
-  const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 
@@ -50,8 +47,6 @@ export default function HomeScreen({
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
-      setExpoPushToken(token);
-
       if (token !== undefined && token?.length > 1) {
         dispatch(registerPushTokenThunk([String(user.id), token]));
       }
@@ -71,7 +66,7 @@ export default function HomeScreen({
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
     // This will set the redux store parking object as well as the notification use state object when pressed to persist data when app is in background.
     responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
+      Notifications.addNotificationResponseReceivedListener((response: any) => {
         let parkingFromNotification: Parking = JSON.parse(
           response.notification &&
             JSON.stringify(response.notification.request.content.data)
@@ -92,26 +87,38 @@ export default function HomeScreen({
   }, [parking]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        Welcome {user.first_name} {user.last_name}
-        {"\n"}Email: {user.email}
-        {"\n"}Address: {user.address}
-        {"\n"}Phone number: {formatPhoneNumber(user.phone_number)}
-        {"\n"}Handicap status: {String(user.handicap)}
-        {"\n"}LoginStatus: {user.status}
-      </Text>
+    <SafeAreaView>
+      <ScrollView
+        centerContent={true}
+        bounces={false}
+        contentContainerStyle={styles.scroll}
+      >
+        <View style={styles.container}>
+          <Image
+            style={styles.logo}
+            source={require("../assets/images/parking_spot_logo.png")}
+          />
+          <Text style={styles.title}>
+            Welcome {user.first_name} {user.last_name}
+            {"\n"}Email: {user.email}
+            {"\n"}Address: {user.address}
+            {"\n"}Phone number: {formatPhoneNumber(user.phone_number)}
+            {"\n"}Handicap status: {String(user.handicap)}
+            {"\n"}LoginStatus: {user.status}
+          </Text>
+          <View
+            style={styles.separator}
+            lightColor="#eee"
+            darkColor="rgba(255,255,255,0.1)"
+          />
+          <Text>Looking for a parking spot? {"\n"}</Text>
+        </View>
 
-      <View style={{ alignItems: "center", justifyContent: "center" }}>
-        <Text> Parking Data: {JSON.stringify(parking)}</Text>
-      </View>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <Image style={styles.image} source={{ uri: imageURL, cache: "reload" }} />
-    </View>
+        <View>
+          <ParkingMapView />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -154,6 +161,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  scroll: { flexGrow: 1, justifyContent: "center" },
+
+  logo: {
+    width: "60%",
+    resizeMode: "contain",
+    height: 100,
+    margin: 20,
+  },
   title: {
     fontSize: 20,
     fontWeight: "bold",
@@ -162,10 +177,5 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
-  },
-  image: {
-    resizeMode: "contain",
-    width: Dimensions.get("window").width - 20,
-    height: 300,
   },
 });

@@ -6,8 +6,8 @@ import { Text, View } from "../components/Themed";
 import { useAppSelector } from "../hooks/hooks";
 
 /**
- * The ModalScreen view accessed through the info icon on the home screen.
- * @returns {JSX.Element}
+ * The ModalScreen view accessed through the info icon on the home screen and shows the push token if needed.
+ * @returns The ModalScreen view.
  */
 export default function ModalScreen() {
   const user = useAppSelector((state) => state.user);

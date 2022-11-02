@@ -25,3 +25,6 @@ docs/assets/style.css
 docs/assets/search.js
 docs/assets/main.js
 screens/login/SignInScreen1.tsx
+
+# other
+variables/

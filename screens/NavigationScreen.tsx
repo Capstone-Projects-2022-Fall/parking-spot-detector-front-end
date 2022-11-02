@@ -9,10 +9,14 @@ import * as React from "react";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useAppSelector } from "../hooks/hooks";
 
-// Use this for registration screen.
-// export default function SettingsScreen({ navigation }: RootTabScreenProps<"TabTwo">) {
-
-export default function SettingsScreen({
+/**
+ * The NavigationScreen is used to show the map of the users current location and the nearest parking available from the
+ * push notification. It also allows the user to navigate to the nearest open parking location if available and opens
+ * directions in google maps.
+ * @param RootTabScreenProps The root tab props needed for the bottom tabs navigation.
+ * @returns The view of the navigation screen.
+ */
+export default function NavigationScreen({
   navigation,
 }: RootTabScreenProps<"TabThree">) {
   const [location, setLocation] = useState<Location.LocationObject>();
