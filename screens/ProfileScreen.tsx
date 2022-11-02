@@ -1,10 +1,7 @@
-import { StyleSheet, Switch, TextInput, TouchableOpacity } from "react-native";
+import { Switch } from "react-native";
 import { useState } from "react";
 import { Box, Button, FormControl, Input, VStack } from "native-base";
-import { Appearance } from "react-native";
-
-import { Text, useThemeColor, View } from "../components/Themed";
-import React from "react";
+import { Text, useThemeColor } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import {
@@ -12,13 +9,20 @@ import {
   logoutUser,
   updateUserProfileThunk,
 } from "../redux/user/userSlice";
-import { StackActions } from "@react-navigation/native";
+import { DarkTheme, StackActions } from "@react-navigation/native";
 import { Center } from "native-base";
 import { HStack } from "native-base";
-import { API_KEY, formatPhoneNumber } from "../constants/Formatters";
-
+import { formatPhoneNumber } from "../constants/Formatters";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { GOOGLE_APIKEY } from "../variables";
+import { Appearance } from "react-native";
 
+/**
+ * The profile screen provides the form to update the user profile, input validation, and screen navigation for
+ * logout deletion and updating.
+ * @param RootTabScreenProps The props for the root tabs.
+ * @returns The profile screen view.
+ */
 export default function ProfileScreen({
   navigation,
 }: RootTabScreenProps<"TabTwo">) {
@@ -94,6 +98,7 @@ export default function ProfileScreen({
 
                 textInput: {
                   backgroundColor: useThemeColor,
+                  color: Appearance.getColorScheme() == "dark" ? "#fff" : "000",
                   borderWidth: 1,
                   borderColor: "gray",
                   height: 36,
@@ -107,7 +112,7 @@ export default function ProfileScreen({
                 returnKeyType: "search",
               }}
               query={{
-                key: API_KEY,
+                key: GOOGLE_APIKEY,
                 language: "en", // language of the results
               }}
               onPress={(data, details = null) => {

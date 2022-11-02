@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -8,13 +8,16 @@ import {
   Input,
   Link,
   VStack,
-  Text,
 } from "native-base";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { logoutUser, registerUserThunk } from "../../redux/user/userSlice";
 import { initialState, LoginStatus } from "../../redux/user/index";
 import { StackActions, useNavigation } from "@react-navigation/native";
 
+/**
+ * The RegisterScreen provides the form, navigation, input validation for user registration.
+ * @returns The registration screen view.
+ */
 export default function RegisterScreen() {
   const [userFirstName, setFirstName] = useState("");
   const [userLastName, setLastName] = useState("");
@@ -122,7 +125,7 @@ export default function RegisterScreen() {
               }
             }}
           >
-            Sign in
+            Register
           </Button>
         </VStack>
       </Box>

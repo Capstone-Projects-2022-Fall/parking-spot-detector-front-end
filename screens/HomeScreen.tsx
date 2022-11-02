@@ -35,22 +35,10 @@ Notifications.setNotificationHandler({
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
-  //****************image refresh ********************* */
-
-  const imgUrlSample = "https://picsum.photos/200#";
-  const imgUrlSample2 =
-    "https://images.unsplash.com/photo-1545179605-1296651e9d43?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&q=20#";
-
-  const serverFrameUrl =
-    "https://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com/cameras/635f5bebad2e8de576523e78/latest";
-
-  const [imageURL, setImage] = useState(serverFrameUrl);
-
   //************ User store****************** */
   const user = useAppSelector((state) => state.user);
 
   /************* Notification ************* */
-  const [expoPushToken, setExpoPushToken] = useState<string | undefined>("");
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 
@@ -59,8 +47,6 @@ export default function HomeScreen({
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
-      setExpoPushToken(token);
-
       if (token !== undefined && token?.length > 1) {
         dispatch(registerPushTokenThunk([String(user.id), token]));
       }
@@ -101,9 +87,13 @@ export default function HomeScreen({
   }, [parking]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView bounces={false} style={styles.scroll}>
-        <View style={styles.home}>
+    <SafeAreaView>
+      <ScrollView
+        centerContent={true}
+        bounces={false}
+        contentContainerStyle={styles.scroll}
+      >
+        <View style={styles.container}>
           <Image
             style={styles.logo}
             source={require("../assets/images/parking_spot_logo.png")}
@@ -116,39 +106,15 @@ export default function HomeScreen({
             {"\n"}Handicap status: {String(user.handicap)}
             {"\n"}LoginStatus: {user.status}
           </Text>
-          <Text>Your expo push token: {expoPushToken}</Text>
-          <View style={{ alignItems: "center", justifyContent: "center" }}>
-            <Text>
-              Title: {notification && notification.request.content.title}{" "}
-            </Text>
-            <Text>
-              Body: {notification && notification.request.content.body}
-            </Text>
-            <Text>Data: {JSON.stringify(parking)}</Text>
-          </View>
-          {/* The button to send notification using fetch requests in notification.ts */}
-          {/* <Button
-        title="Press to Send Notification"
-        onPress={async () => {
-          await sendPushNotification(expoPushToken);
-        }}
-      /> */}
           <View
             style={styles.separator}
             lightColor="#eee"
             darkColor="rgba(255,255,255,0.1)"
           />
-          <Image
-            style={styles.image}
-            source={{ uri: "https://picsum.photos/200/300" }}
-          />
-          <Text>Open profile tab to update your information {"\n"}</Text>
+          <Text>Looking for a parking spot? {"\n"}</Text>
         </View>
 
-        {/* <EditScreenInfo path="/screens/HomeScreen.tsx" /> */}
-
-        <View style={styles.mapContainer}>
-          <Text>Looking for a parking spot?</Text>
+        <View>
           <ParkingMapView />
         </View>
       </ScrollView>
@@ -194,22 +160,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    width: Dimensions.get("window").width * 1.05,
   },
-  scroll: {
-    backgroundColor: "purple",
-  },
-  home: {
-    padding: "10%",
-  },
+  scroll: { flexGrow: 1, justifyContent: "center" },
+
   logo: {
     width: "60%",
     resizeMode: "contain",
-    backgroundColor: "white",
-    borderRadius: 15,
-    height: 30,
-    padding: "12% 0%",
-    margin: "20% 0%",
+    height: 100,
+    margin: 20,
   },
   title: {
     fontSize: 20,
@@ -219,13 +177,5 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
-  },
-  mapContainer: {
-    padding: "2.5%",
-  },
-  image: {
-    resizeMode: "contain",
-    width: Dimensions.get("window").width - 20,
-    height: 300,
   },
 });
