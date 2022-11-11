@@ -6,7 +6,7 @@ import { Button } from "native-base";
 import * as Location from "expo-location";
 import * as React from "react";
 
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { useAppSelector } from "../hooks/hooks";
 
 /**
@@ -98,6 +98,11 @@ export default function NavigationScreen({
         />
         <Marker
           ref={parkingMarkerRef}
+          image={
+            !parking.parkingAval
+              ? require("../assets/images/transparent_small.png")
+              : require("../assets/images/parking_marker_150px.png")
+          }
           coordinate={{
             latitude: parking.coordinates[0],
             longitude: parking.coordinates[1],
