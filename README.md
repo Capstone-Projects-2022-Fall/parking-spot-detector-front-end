@@ -16,11 +16,22 @@ The mobile app in this repository is developed using React Native, a Facebook-ma
 [Download the Expo Go application from the Google or Apple stores for your mobile device.](https://expo.dev/client)
 Scan the following QR code on your mobile device after the Expo Go app is installed:
 
-<img src="https://qr.expo.dev/expo-go?owner=projects-in-computer-science&slug=ParkingSpotDetectorv1&releaseChannel=default&host=exp.host" width="350" alt="Parking Spot Detector App QR code">
+#### Android Version
+
+<img src="https://qr.expo.dev/eas-update?updateId=7c8fcac9-752c-46ce-a9ed-2d59d5fdb51a&appScheme=exp&host=u.expo.dev" width="350" alt="Parking Spot Detector App QR code">
 
 Or, open this link on your browser or Expo Go App after the Expo Go app is installed:
 
-[exp.host/@projects-in-computer-science/ParkingSpotDetectorv1?release-channel=default](exp.host/@projects-in-computer-science/ParkingSpotDetectorv1?release-channel=default)
+[exp://u.expo.dev/update/7c8fcac9-752c-46ce-a9ed-2d59d5fdb51a](exp://u.expo.dev/update/7c8fcac9-752c-46ce-a9ed-2d59d5fdb51a)
+
+
+####  IOS  Version
+
+<img src="https://qr.expo.dev/eas-update?updateId=292f39c7-1ed6-4911-be6f-b046aa52c4c5&appScheme=exp&host=u.expo.dev" width="350" alt="Parking Spot Detector App QR code">
+
+Or, open this link on your browser or Expo Go App after the Expo Go app is installed:
+
+[exp://u.expo.dev/update/292f39c7-1ed6-4911-be6f-b046aa52c4c5](exp://u.expo.dev/update/292f39c7-1ed6-4911-be6f-b046aa52c4c5)
 
 ### Development Instructions
 
