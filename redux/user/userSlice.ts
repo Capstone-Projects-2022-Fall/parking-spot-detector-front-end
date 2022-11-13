@@ -4,6 +4,9 @@ import axios from "axios";
 import { LoginStatus, initialState, User } from "./index";
 import * as Crypto from "expo-crypto";
 
+const SERVER_ADDR =
+  "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io";
+
 /**
  * Thunk for fetching user using axios
  * @param email The email of the user
@@ -18,8 +21,7 @@ export const fetchUserThunk = createAsyncThunk(
     );
     try {
       const response = await axios.get<User>(
-        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users?email=" +
-          cred[0],
+        SERVER_ADDR + "/users?email=" + cred[0],
         {
           headers: {
             Accept: "application/json",
@@ -74,7 +76,7 @@ export const registerUserThunk = createAsyncThunk(
       };
       // make request to backend
       const { data } = await axios.post<User>(
-        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users",
+        SERVER_ADDR + "/users",
         user,
         config
       );
@@ -117,8 +119,7 @@ export const registerPushTokenThunk = createAsyncThunk(
       };
 
       const response = await axios.put<User>(
-        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/usersToken?id=" +
-          idAndToken[0],
+        SERVER_ADDR + "/usersToken?id=" + idAndToken[0],
         idAndToken,
         config
       );
@@ -164,8 +165,7 @@ export const updateUserProfileThunk = createAsyncThunk(
       );
       // make request to backend
       const { data } = await axios.put<User>(
-        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users?id=" +
-          user.id,
+        SERVER_ADDR + "/users?id=" + user.id,
         user,
         config
       );
@@ -210,8 +210,7 @@ export const deleteUserThunk = createAsyncThunk(
       };
       // make request to backend
       const { data } = await axios.delete<User>(
-        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io/users?id=" +
-          user.id
+        SERVER_ADDR + "/users?id=" + user.id
       );
 
       // Should contain success response JSON.stringify(data) === '"success..."';

@@ -69,7 +69,7 @@ export default function NavigationScreen({
 
       setLocation(location);
     })();
-  }, [location]);
+  }, [location, parking.parkingAval]);
 
   return (
     <View style={styles.container}>
