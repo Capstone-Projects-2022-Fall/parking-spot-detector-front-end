@@ -21,7 +21,7 @@ The mobile app in this repository is developed using React Native, a Facebook-ma
     - Home Screen
       - User login information
       - Parking location data on map
-        - Parking location can be show more info may be chosen and more data can be viewed on new screen with navigation button
+        - Parking location markers can be selected to show more details
       - Create parking area button opens new screen to enter a new parking location
     - User Profile Screen
       - Update, logout, and delete may be chosen to modify or logout user
@@ -32,9 +32,10 @@ The mobile app in this repository is developed using React Native, a Facebook-ma
 
 #### Known Issues
 
-- User registration issues
-  - User registration not working currently, use login credentials displayed on sign in screen
+- User profile issues
+  - User profile update and delete not currently working-fix in progress
 - Navigation screen map updates may lag based on wifi/cell signal
+- Create parking area request does not update map markers on home screen until restart at times.
 
 ### Installation Instructions
 
