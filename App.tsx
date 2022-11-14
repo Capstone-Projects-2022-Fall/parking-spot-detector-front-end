@@ -8,6 +8,9 @@ import Navigation from "./navigation";
 import store from "./redux/store";
 import * as Location from "expo-location";
 import { useState, useEffect } from "react";
+import axios from "./api/axios";
+
+axios.defaults.withCredentials = true;
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

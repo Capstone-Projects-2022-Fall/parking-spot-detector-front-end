@@ -28,13 +28,13 @@ export default function SignInScreen() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   // Listen for changes on user.status and allow login if credentials match.
   useEffect(() => {
     if (user.status == LoginStatus.SUCCEEDED) {
-      setEmail("");
+      setUsername("");
       setPassword("");
       navigation.dispatch(StackActions.replace("Root"));
     }
@@ -69,13 +69,16 @@ export default function SignInScreen() {
           size="xs"
         >
           Sign in to continue! {"\n"}
-          test@email.com and password
+          username: username and password: password
         </Heading>
 
         <VStack space={3} mt="5">
           <FormControl>
-            <FormControl.Label>Email ID</FormControl.Label>
-            <Input onChangeText={(text) => setEmail(text)} />
+            <FormControl.Label>Username</FormControl.Label>
+            <Input
+              autoCapitalize="none"
+              onChangeText={(text) => setUsername(text)}
+            />
           </FormControl>
           <FormControl>
             <FormControl.Label>Password</FormControl.Label>
@@ -97,8 +100,8 @@ export default function SignInScreen() {
             mt="2"
             colorScheme="purple"
             onPress={() => {
-              dispatch(fetchUserThunk([email, password]));
-              console.log("Email: " + email + " " + "Password: " + password);
+              dispatch(fetchUserThunk([username, password]));
+              console.log("Email: " + username + " " + "Password: " + password);
             }}
           >
             Sign in

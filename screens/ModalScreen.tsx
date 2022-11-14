@@ -13,7 +13,7 @@ export default function ModalScreen() {
   const user = useAppSelector((state) => state.user);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{user.pushToken}</Text>
+      <Text style={styles.title}>{user.push_token}</Text>
       <View
         style={styles.separator}
         lightColor="#eee"

@@ -13,14 +13,16 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { logoutUser, registerUserThunk } from "../../redux/user/userSlice";
 import { initialState, LoginStatus } from "../../redux/user/index";
 import { StackActions, useNavigation } from "@react-navigation/native";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
 
 /**
  * The RegisterScreen provides the form, navigation, input validation for user registration.
  * @returns The registration screen view.
  */
 export default function RegisterScreen() {
-  const [userFirstName, setFirstName] = useState("");
-  const [userLastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
 
   const [userEmail, setUserEmail] = useState("");
   const [userPass1, setUserPass1] = useState("");
@@ -36,8 +38,7 @@ export default function RegisterScreen() {
 
     if (user.regStatus == LoginStatus.SUCCEEDED) {
       // Clear input text states.
-      setFirstName("");
-      setLastName("");
+      setUsername("");
       setUserPass1("");
       setUserPass2("");
 
@@ -75,12 +76,8 @@ export default function RegisterScreen() {
 
         <VStack space={3} mt="5">
           <FormControl>
-            <FormControl.Label>First name</FormControl.Label>
-            <Input onChangeText={(val) => setFirstName(val)} />
-          </FormControl>
-          <FormControl>
-            <FormControl.Label>Last name</FormControl.Label>
-            <Input onChangeText={(val) => setLastName(val)} />
+            <FormControl.Label>Username</FormControl.Label>
+            <Input onChangeText={(val) => setUsername(val)} />
           </FormControl>
           <FormControl>
             <FormControl.Label>Email</FormControl.Label>
@@ -114,13 +111,18 @@ export default function RegisterScreen() {
                 alert("Passwords do not match");
               } else if (userEmail.length < 1) {
                 alert("Invalid email address");
-              } else if (userFirstName.length < 1 || userLastName.length < 1) {
-                alert("Name field missing");
+              } else if (username.length < 1) {
+                alert("Username field missing");
               } else {
-                data.first_name = userFirstName;
-                data.last_name = userLastName;
+                data.username = username;
                 data.email = userEmail;
-                data.password_hash = userPass1;
+                data.password = userPass1;
+                registerForPushNotificationsAsync().then((token) => {
+                  if (token !== undefined && token?.length > 1) {
+                    data.push_token = token;
+                    console.log(data.push_token);
+                  }
+                });
                 dispatch(registerUserThunk(data));
               }
             }}
@@ -131,4 +133,37 @@ export default function RegisterScreen() {
       </Box>
     </Center>
   );
+}
+
+async function registerForPushNotificationsAsync() {
+  let token = "";
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  return token;
 }
