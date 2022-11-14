@@ -2,10 +2,9 @@ import { RootState } from "../store";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { LoginStatus, initialState, User } from "./index";
-import * as Crypto from "expo-crypto";
 
 const SERVER_ADDR =
-  "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io";
+  "http://parkingspotdetector-env.eba-mmwgffbe.us-east-1.elasticbeanstalk.com";
 
 /**
  * Thunk for fetching user using axios
@@ -15,37 +14,35 @@ const SERVER_ADDR =
 export const fetchUserThunk = createAsyncThunk(
   "user/fetchUser",
   async (cred: string[]) => {
-    let hashedUserPass = await Crypto.digestStringAsync(
-      Crypto.CryptoDigestAlgorithm.SHA256,
-      cred[1]
-    );
     try {
-      const response = await axios.get<User>(
-        SERVER_ADDR + "/users?email=" + cred[0],
+      const response = await axios.post<User>(
+        SERVER_ADDR + "/login",
+        { password: cred[1], username: cred[0] },
         {
           headers: {
-            Accept: "application/json",
+            "Content-Type": "application/json",
           },
         }
       );
-      let data = response.data;
+      const { data } = response;
+
       if ((response.status = 200)) {
-        if (hashedUserPass != data.password_hash) {
-          console.log(response.status);
-          alert("Invalid password or email");
-          throw console.log("Invalid password or email");
-        } else {
-          console.log(response.status);
-          return data;
-        }
+        console.log("User login response " + JSON.stringify(data.username));
+        return data;
       }
 
-      console.log("User login response " + JSON.stringify(data));
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("error message: ", error.message);
-        throw console.warn("Network error");
+        if (error.code == "ERR_BAD_REQUEST") {
+          alert("Incorrect username or password");
+        } else {
+          console.log(
+            "error message: ",
+            error.message + " Status: " + error.code
+          );
+          throw console.warn("Network error");
+        }
       }
       throw error;
     }
@@ -62,10 +59,6 @@ export const registerUserThunk = createAsyncThunk(
   "user/register",
   // callback function
   async (user: User) => {
-    user.password_hash = await Crypto.digestStringAsync(
-      Crypto.CryptoDigestAlgorithm.SHA256,
-      user.password_hash
-    );
     try {
       // configure header's Content-Type as JSON
       const config = {
@@ -76,14 +69,15 @@ export const registerUserThunk = createAsyncThunk(
       };
       // make request to backend
       const { data } = await axios.post<User>(
-        SERVER_ADDR + "/users",
+        SERVER_ADDR + "/register",
         user,
         config
       );
 
       // Should contain success response JSON.stringify(data) === '"success..."';
       console.log("Register user response " + JSON.stringify(data));
-      if (JSON.stringify(data) == '{"status":"ok"}') {
+      if (JSON.stringify(data) == '{"success":true}') {
+        console.log("User registration successful");
         return data;
       } else {
         throw alert("Error registerning user");
@@ -94,8 +88,7 @@ export const registerUserThunk = createAsyncThunk(
         console.warn("error message: ", error.message);
         return error.message;
       }
-      console.warn("Unexpected error registering user");
-      return "Unexpected error registering user";
+      console.warn("Unexpected error registering user " + error);
     }
   }
 );
@@ -119,7 +112,9 @@ export const registerPushTokenThunk = createAsyncThunk(
       };
 
       const response = await axios.put<User>(
-        SERVER_ADDR + "/usersToken?id=" + idAndToken[0],
+        "https://a8553b5c-8fa1-4270-9c5e-ed3c2d731eae.mock.pstmn.io" +
+          "/usersToken?id=" +
+          idAndToken[0],
         idAndToken,
         config
       );
@@ -158,14 +153,9 @@ export const updateUserProfileThunk = createAsyncThunk(
           Accept: "application/json",
         },
       };
-
-      user.password_hash = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        user.password_hash
-      );
       // make request to backend
       const { data } = await axios.put<User>(
-        SERVER_ADDR + "/users?id=" + user.id,
+        SERVER_ADDR + "/users?id=" + user._id,
         user,
         config
       );
@@ -210,7 +200,7 @@ export const deleteUserThunk = createAsyncThunk(
       };
       // make request to backend
       const { data } = await axios.delete<User>(
-        SERVER_ADDR + "/users?id=" + user.id
+        SERVER_ADDR + "/users?id=" + user._id
       );
 
       // Should contain success response JSON.stringify(data) === '"success..."';
@@ -245,10 +235,11 @@ export const userSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     currentUser: (state, action: PayloadAction<User>) => {
-      state.id = action.payload.id;
+      state._id = action.payload._id;
       state.first_name = action.payload.first_name;
       state.last_name = action.payload.last_name;
       state.email = action.payload.email;
+      state.username = action.payload.username;
       state.phone_number = action.payload.phone_number;
       state.handicap = action.payload.handicap;
       state.address = action.payload.address;
@@ -256,12 +247,13 @@ export const userSlice = createSlice({
       state.regStatus = LoginStatus.IDLE;
     },
     logoutUser: (state) => {
-      state.id = initialState.id;
+      state._id = initialState._id;
       state.first_name = initialState.first_name;
       state.last_name = initialState.last_name;
+      state.username = initialState.username;
       state.email = initialState.email;
       state.phone_number = initialState.phone_number;
-      state.password_hash = initialState.password_hash;
+      state.password = initialState.password;
       state.handicap = initialState.handicap;
       state.address = initialState.address;
       state.status = LoginStatus.IDLE;
@@ -276,14 +268,15 @@ export const userSlice = createSlice({
         state.status = LoginStatus.LOADING;
       })
       .addCase(fetchUserThunk.fulfilled, (state, action) => {
-        state.id = action.payload.id;
+        state._id = action.payload._id;
         state.status = LoginStatus.SUCCEEDED;
         state.first_name = action.payload.first_name;
         state.last_name = action.payload.last_name;
+        state.username = action.payload.username;
         state.handicap = action.payload.handicap;
         state.email = action.payload.email;
         state.phone_number = action.payload.phone_number;
-        state.password_hash = action.payload.password_hash;
+        state.password = action.payload.password;
         state.address = action.payload.address;
       })
       .addCase(fetchUserThunk.rejected, (state) => {
@@ -296,6 +289,8 @@ export const userSlice = createSlice({
       })
       .addCase(registerUserThunk.fulfilled, (state, action) => {
         state.regStatus = LoginStatus.SUCCEEDED;
+
+        console.log(action.meta.arg);
       })
       .addCase(registerUserThunk.rejected, (state) => {
         state.regStatus = LoginStatus.FAILED;
@@ -319,7 +314,7 @@ export const userSlice = createSlice({
       .addCase(deleteUserThunk.rejected, (state) => {})
       // Register token cases
       .addCase(registerPushTokenThunk.fulfilled, (state, action) => {
-        state.pushToken = action.meta.arg[1];
+        state.push_token = action.meta.arg[1];
       });
   },
 });
@@ -327,6 +322,6 @@ export const userSlice = createSlice({
 export const { currentUser, logoutUser } = userSlice.actions;
 
 // User ID global
-export const selectUserId = (state: RootState) => state.user.id;
+export const selectUserId = (state: RootState) => state.user._id;
 
 export default userSlice.reducer;

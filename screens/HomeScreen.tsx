@@ -48,7 +48,8 @@ export default function HomeScreen({
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       if (token !== undefined && token?.length > 1) {
-        dispatch(registerPushTokenThunk([String(user.id), token]));
+        //TODO uncomment after push is set up ********************************************************************************
+        dispatch(registerPushTokenThunk([String(user._id), token]));
       }
 
       console.log(token);
@@ -100,7 +101,9 @@ export default function HomeScreen({
           />
           <Text style={styles.title}>
             Welcome {user.first_name} {user.last_name}
+            {"\n"}ID: {user._id}
             {"\n"}Email: {user.email}
+            {"\n"}Username: {user.username}
             {"\n"}Address: {user.address}
             {"\n"}Phone number: {formatPhoneNumber(user.phone_number)}
             {"\n"}Handicap status: {String(user.handicap)}
@@ -113,7 +116,6 @@ export default function HomeScreen({
           />
           <Text>Looking for a parking spot? {"\n"}</Text>
         </View>
-
         <View>
           <ParkingMapView />
         </View>

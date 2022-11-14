@@ -8,15 +8,16 @@ export enum LoginStatus {
 }
 
 export interface User {
-  id: number;
+  _id: string;
   first_name: string;
   last_name: string;
+  username: string;
   email: string;
   phone_number: string;
-  password_hash: string;
+  password: string;
   handicap: boolean;
   address: string;
-  pushToken: string;
+  push_token: string;
   regStatus:
     | LoginStatus.IDLE
     | LoginStatus.LOADING
@@ -30,15 +31,16 @@ export interface User {
 }
 
 export const initialState: User = {
-  id: 0,
+  _id: "",
   first_name: "",
   last_name: "",
   email: "",
+  username: "",
   phone_number: "",
-  password_hash: "",
+  password: "",
   handicap: false,
   address: "",
-  pushToken: "",
+  push_token: "",
   status: LoginStatus.IDLE,
   regStatus: LoginStatus.IDLE,
 };
