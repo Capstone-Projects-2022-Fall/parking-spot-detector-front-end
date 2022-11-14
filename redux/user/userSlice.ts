@@ -67,6 +67,9 @@ export const registerUserThunk = createAsyncThunk(
           Accept: "application/json",
         },
       };
+
+      console.log("Sending this push_token to register: " + user.push_token);
+      console.log("Registering this user: " + user.username);
       // make request to backend
       const { data } = await axios.post<User>(
         SERVER_ADDR + "/register",
@@ -290,7 +293,9 @@ export const userSlice = createSlice({
       .addCase(registerUserThunk.fulfilled, (state, action) => {
         state.regStatus = LoginStatus.SUCCEEDED;
 
-        console.log(action.meta.arg);
+        console.log(
+          "After registration complete: " + action.meta.arg.push_token
+        );
       })
       .addCase(registerUserThunk.rejected, (state) => {
         state.regStatus = LoginStatus.FAILED;

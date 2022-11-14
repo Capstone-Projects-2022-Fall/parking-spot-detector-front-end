@@ -23,7 +23,7 @@ import { Platform } from "react-native";
  */
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");
-
+  const [expoPushToken, setExpoPushToken] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPass1, setUserPass1] = useState("");
   const [userPass2, setUserPass2] = useState("");
@@ -48,6 +48,15 @@ export default function RegisterScreen() {
       navigation.dispatch(StackActions.replace("SignIn"));
     }
   }, [user.regStatus]);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      if (token !== undefined && token?.length > 1) {
+        setExpoPushToken(token);
+        console.log("Getting push token: " + expoPushToken);
+      }
+    });
+  }, []);
 
   return (
     <Center w="100%">
@@ -117,12 +126,11 @@ export default function RegisterScreen() {
                 data.username = username;
                 data.email = userEmail;
                 data.password = userPass1;
-                registerForPushNotificationsAsync().then((token) => {
-                  if (token !== undefined && token?.length > 1) {
-                    data.push_token = token;
-                    console.log(data.push_token);
-                  }
-                });
+                data.push_token = expoPushToken;
+
+                console.log(
+                  "Before registration PushToken: " + data.push_token
+                );
                 dispatch(registerUserThunk(data));
               }
             }}
