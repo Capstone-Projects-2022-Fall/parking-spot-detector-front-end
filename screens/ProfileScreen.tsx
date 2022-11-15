@@ -164,7 +164,7 @@ export default function ProfileScreen({
                   data.phone_number = userPhone;
                   data.handicap = isEnabled;
                   data.email = userEmail;
-                  data.password_hash = userPass1;
+                  data.password = userPass1;
                   // Update in server, if password is supplied it will be hashed in the thunk.
                   dispatch(updateUserProfileThunk(data));
                 }
