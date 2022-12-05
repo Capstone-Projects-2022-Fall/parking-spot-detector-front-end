@@ -1,6 +1,6 @@
 import { useNavigation, StackActions } from "@react-navigation/native";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { fetchUserThunk } from "../../redux/user/userSlice";
+import { loginThunk } from "../../redux/user/userSlice";
 
 import { StyleSheet, Image } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -100,7 +100,7 @@ export default function SignInScreen() {
             mt="2"
             colorScheme="purple"
             onPress={() => {
-              dispatch(fetchUserThunk([username, password]));
+              dispatch(loginThunk([username, password]));
               console.log("Email: " + username + " " + "Password: " + password);
             }}
           >
