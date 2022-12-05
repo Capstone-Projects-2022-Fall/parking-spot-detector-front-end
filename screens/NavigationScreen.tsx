@@ -73,7 +73,7 @@ export default function NavigationScreen({
 
       setLocation(location);
     })();
-  }, [location]); // Update map if location or parking availability changes.
+  }, [location, parking.parkingAval]); // Update map if location or parking availability changes.
 
   return (
     <View style={styles.container}>
@@ -133,10 +133,10 @@ export default function NavigationScreen({
       >
         Navigate to Location
       </Button>
-      <Text>
+      {/* <Text>
         Latitude: {location?.coords.latitude} {"\n"} Longitude:
         {location?.coords.longitude}
-      </Text>
+      </Text> */}
     </View>
   );
 }
