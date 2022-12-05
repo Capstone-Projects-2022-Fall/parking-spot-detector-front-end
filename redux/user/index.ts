@@ -8,7 +8,7 @@ export enum LoginStatus {
 }
 
 export interface User {
-  //_id: string;
+  _id?: string;
   first_name: string;
   last_name: string;
   username: string;
@@ -31,7 +31,7 @@ export interface User {
 }
 
 export const initialState: User = {
-  //_id: "",
+  _id: "",
   first_name: "",
   last_name: "",
   email: "",

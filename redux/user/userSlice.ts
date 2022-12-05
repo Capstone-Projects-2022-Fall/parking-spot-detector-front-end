@@ -59,6 +59,7 @@ export const registerUserThunk = createAsyncThunk(
   "user/register",
   // callback function
   async (user: User) => {
+    delete user._id;
     try {
       // configure header's Content-Type as JSON
       const config = {
@@ -158,7 +159,7 @@ export const updateUserProfileThunk = createAsyncThunk(
       };
       // make request to backend
       const { data } = await axios.put<User>(
-        SERVER_ADDR + "/users?id=", // + user._id,
+        SERVER_ADDR + "/users?id=" + user._id,
         user,
         config
       );
@@ -203,7 +204,7 @@ export const deleteUserThunk = createAsyncThunk(
       };
       // make request to backend
       const { data } = await axios.delete<User>(
-        SERVER_ADDR + "/users?id=" // + user._id
+        SERVER_ADDR + "/users?id=" + user._id
       );
 
       // Should contain success response JSON.stringify(data) === '"success..."';
@@ -238,7 +239,7 @@ export const userSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     currentUser: (state, action: PayloadAction<User>) => {
-      // state._id = action.payload._id;
+      state._id = action.payload._id;
       state.first_name = action.payload.first_name;
       state.last_name = action.payload.last_name;
       state.email = action.payload.email;
@@ -250,7 +251,7 @@ export const userSlice = createSlice({
       state.regStatus = LoginStatus.IDLE;
     },
     logoutUser: (state) => {
-      //state._id = initialState._id;
+      state._id = initialState._id;
       state.first_name = initialState.first_name;
       state.last_name = initialState.last_name;
       state.username = initialState.username;
@@ -271,7 +272,7 @@ export const userSlice = createSlice({
         state.status = LoginStatus.LOADING;
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
-        //state._id = action.payload._id;
+        state._id = action.payload._id;
         state.status = LoginStatus.SUCCEEDED;
         state.first_name = action.payload.first_name;
         state.last_name = action.payload.last_name;
@@ -327,6 +328,6 @@ export const userSlice = createSlice({
 export const { currentUser, logoutUser } = userSlice.actions;
 
 // User ID global
-//export const selectUserId = (state: RootState) => state.user._id;
+export const selectUserId = (state: RootState) => state.user._id;
 
 export default userSlice.reducer;
