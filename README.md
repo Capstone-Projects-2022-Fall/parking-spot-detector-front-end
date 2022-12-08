@@ -23,6 +23,7 @@ The mobile app in this repository is developed using React Native, a Facebook-ma
       - Parking location data on map
         - Parking location markers can be selected to show more details
       - Create parking area button opens new screen to enter a new parking location
+      - Map markers can be choosen to view live parking when cameras are configured
     - User Profile Screen
       - Update, logout, and delete may be chosen to modify or logout user
     - Navigation Screen
@@ -48,7 +49,7 @@ The mobile app in this repository is developed using React Native, a Facebook-ma
 
 Or, open this link on your browser or Expo Go App after the Expo Go app is installed:
 
-[exp://u.expo.dev/update/e4866825-16a3-40a6-9950-45a0b08b0aa1](exp://u.expo.dev/update/e4866825-16a3-40a6-9950-45a0b08b0aa1)
+[exp://u.expo.dev/update/8d9433dc-68a4-4cbc-9af5-a03c87d73d79](exp://u.expo.dev/update/8d9433dc-68a4-4cbc-9af5-a03c87d73d79)
 
 - IOS Version
 
@@ -56,7 +57,7 @@ Or, open this link on your browser or Expo Go App after the Expo Go app is insta
 
 Or, open this link on your browser or Expo Go App after the Expo Go app is installed:
 
-[exp://u.expo.dev/update/19398b82-7282-42c5-bb7d-c36120d8b234](exp://u.expo.dev/update/19398b82-7282-42c5-bb7d-c36120d8b234)
+[exp://u.expo.dev/update/59c16d15-e0b0-4fbe-af99-027c8900b5aa](exp://u.expo.dev/update/59c16d15-e0b0-4fbe-af99-027c8900b5aa)
 
 ### Development Instructions
 
