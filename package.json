@@ -10,7 +10,11 @@
     "test": "jest --watchAll"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+  "transformIgnorePatterns": [
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
+  ]
+    
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
@@ -18,6 +22,7 @@
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
     "@reduxjs/toolkit": "^1.8.6",
+    "@testing-library/react-native": "^11.4.0",
     "axios": "^0.27.2",
     "expo": "^46.0.17",
     "expo-asset": "~8.6.1",
